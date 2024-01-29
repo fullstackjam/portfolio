@@ -1,0 +1,11 @@
+replicaCount: 2
+
+image:
+  repository: fullstackjam/portfolio
+  pullPolicy: Always
+  tag: latest
+
+ingressRoute:
+  domains:
+    - fullstackjam.com
+    - www.fullstackjam.com
