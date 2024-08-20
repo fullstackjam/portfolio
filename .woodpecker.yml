@@ -3,16 +3,17 @@ when:
     branch: master
 
 steps:
-  - name: build_and_push
+  - name: build-and-push
     image: docker:latest
     pull: true
     environment:
       HARBOR_REGISTRY: registry.fullstackjam.dev
       IMAGE_NAME: portfolio
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - echo "Building Docker image..."
       - COMMIT_HASH=$(git rev-parse --short=7 HEAD)
       - docker build -t $HARBOR_REGISTRY/$IMAGE_NAME:latest -t $HARBOR_REGISTRY/$IMAGE_NAME:$COMMIT_HASH .
-      - echo "Pushing Docker image to Harbor..."
       - docker push $HARBOR_REGISTRY/$IMAGE_NAME:latest
       - docker push $HARBOR_REGISTRY/$IMAGE_NAME:$COMMIT_HASH
