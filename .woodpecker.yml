@@ -1,19 +1,25 @@
 when:
-  - event: push
-    branch: master
+  branch: master
+  event: [push, pull_request]
+
+variables:
+  - &file Dockerfile
+  - &repo registry.fullstackjam.dev/app/portfolio
 
 steps:
-  - name: build-and-push
-    image: docker:latest
-    pull: true
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
     environment:
-      HARBOR_REGISTRY: registry.fullstackjam.dev
-      IMAGE_NAME: portfolio
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    commands:
-      - echo "Building Docker image..."
-      - COMMIT_HASH=$(git rev-parse --short=7 HEAD)
-      - docker build -t $HARBOR_REGISTRY/$IMAGE_NAME:latest -t $HARBOR_REGISTRY/$IMAGE_NAME:$COMMIT_HASH .
-      - docker push $HARBOR_REGISTRY/$IMAGE_NAME:latest
-      - docker push $HARBOR_REGISTRY/$IMAGE_NAME:$COMMIT_HASH
+      COMMIT_HASH: ${DRONE_COMMIT_SHA:0:7}
+    settings:
+      dockerfile: *file
+      platforms: linux/amd64
+      repo: *repo
+      registry: registry.fullstackjam.dev
+      tags:
+        - latest
+        - ${COMMIT_HASH}
+      username:
+        from_secret: harbor_username
+      password:
+        from_secret: harbor_password
