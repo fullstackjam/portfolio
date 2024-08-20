@@ -1,19 +1,14 @@
-pipeline:
+steps:
   build_and_push:
     image: docker:latest
     pull: true
     environment:
       # 使用已配置的Secrets
-      HARBOR_USERNAME: ${HARBOR_USERNAME}
-      HARBOR_PASSWORD: ${HARBOR_PASSWORD}
       HARBOR_REGISTRY: registry.fullstackjam.dev
       IMAGE_NAME: portfolio
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - echo "Building Docker image..."
       - COMMIT_HASH=$(git rev-parse --short=7 HEAD)
-      - docker login -u $HARBOR_USERNAME -p $HARBOR_PASSWORD $HARBOR_REGISTRY
       - docker build -t $HARBOR_REGISTRY/$IMAGE_NAME:latest -t $HARBOR_REGISTRY/$IMAGE_NAME:$COMMIT_HASH .
       - echo "Pushing Docker image to Harbor..."
       - docker push $HARBOR_REGISTRY/$IMAGE_NAME:latest
