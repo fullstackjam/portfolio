@@ -1,9 +1,12 @@
+when:
+  - event: push
+    branch: main
+
 steps:
-  build_and_push:
+  - name: build_and_push
     image: docker:latest
     pull: true
     environment:
-      # 使用已配置的Secrets
       HARBOR_REGISTRY: registry.fullstackjam.dev
       IMAGE_NAME: portfolio
     commands:
