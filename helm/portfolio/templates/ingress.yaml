@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: portfolio
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    external-dns.alpha.kubernetes.io/target: "homelab-tunnel.fullstackjam.dev"
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  rules:
+    - host: {{ .Values.ingress.hosts[0].host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: portfolio
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - {{ .Values.ingress.hosts[0].host }}
+      secretName: {{ .Values.ingress.hosts[0].tlsSecret }}

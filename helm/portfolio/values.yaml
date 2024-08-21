@@ -1,11 +1,12 @@
 replicaCount: 3
 
 image:
-  repository: fullstackjam/portfolio
+  repository: registry.fullstackjam.dev/app/portfolio
   pullPolicy: Always
   tag: latest
 
-ingressRoute:
-  domains:
-    - fullstackjam.com
-    - www.fullstackjam.com
+ingress:
+  enabled: true
+  hosts:
+    - host: angular-app.yourdomain.com
+      tlsSecret: angular-app-tls
