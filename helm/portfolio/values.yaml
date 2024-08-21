@@ -7,7 +7,7 @@ image:
 
 ingress:
   enabled: true
-  host:
+  hosts:
     - host: portfolio.fullstackjam.dev
     - host: www.fullstackjam.dev
   tlsSecret: portfolio-tls-certificate
