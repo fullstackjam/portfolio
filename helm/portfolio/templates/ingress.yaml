@@ -4,6 +4,7 @@ metadata:
   name: portfolio
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     external-dns.alpha.kubernetes.io/target: "homelab-tunnel.fullstackjam.dev"
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
 spec:
