@@ -5,12 +5,11 @@ when:
 variables:
   - &file Dockerfile
   - &repo registry.fullstackjam.dev/app/portfolio
+  - &commit_hash ${DRONE_COMMIT_SHA:0:7}
 
 steps:
   publish:
     image: woodpeckerci/plugin-docker-buildx
-    environment:
-      COMMIT_HASH: ${DRONE_COMMIT_SHA:0:7}
     settings:
       dockerfile: *file
       platforms: linux/amd64
