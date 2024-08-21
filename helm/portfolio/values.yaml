@@ -8,5 +8,5 @@ image:
 ingress:
   enabled: true
   hosts:
-    - host: angular-app.yourdomain.com
-      tlsSecret: angular-app-tls
+    - host: portfolio.fullstackjam.dev
+      tlsSecret: portfolio-tls-certificate
