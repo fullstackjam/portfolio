@@ -4,12 +4,13 @@ metadata:
   name: portfolio
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/cluster-issuer: letsencrypt-prod
     external-dns.alpha.kubernetes.io/target: "homelab-tunnel.fullstackjam.dev"
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
 spec:
+  ingressClassName: nginx
   rules:
-    - host: {{ .Values.ingress.host }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
       http:
         paths:
           - path: /
@@ -19,7 +20,10 @@ spec:
                 name: portfolio
                 port:
                   number: 80
+    {{- end }}
   tls:
     - hosts:
-        - {{ .Values.ingress.host }}
+        {{- range .Values.ingress.hosts }}
+        - {{ .host }}
+        {{- end }}
       secretName: {{ .Values.ingress.tlsSecret }}
