@@ -8,6 +8,7 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
 spec:
   ingressClassName: nginx
+  {{- if .Values.ingress.hosts }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ .host }}
@@ -21,9 +22,12 @@ spec:
                 port:
                   number: 80
     {{- end }}
+  {{- end }}
   tls:
+    {{- if .Values.ingress.hosts }}
     - hosts:
         {{- range .Values.ingress.hosts }}
         - {{ .host }}
         {{- end }}
       secretName: {{ .Values.ingress.tlsSecret }}
+    {{- end }}
