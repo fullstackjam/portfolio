@@ -9,3 +9,6 @@ ingress:
   enabled: true
   host: portfolio.fullstackjam.dev
   tlsSecret: portfolio-tls-certificate
+
+imagePullSecrets:
+  name: my-harbor-secret
