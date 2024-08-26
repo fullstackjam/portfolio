@@ -1,7 +1,7 @@
 replicaCount: 3
 
 image:
-  repository: registry.fullstackjam.dev/app/portfolio
+  repository: harbor.fullstackjam.dev/app/portfolio
   pullPolicy: Always
   tag: latest
 
