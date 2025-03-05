@@ -1,12 +1,12 @@
 replicaCount: 1
 
 image:
-  repository: registry.fullstackjam.dev/portfolio
+  repository: registry.fullstackjam.com/portfolio
   pullPolicy: Always
   tag: latest
 
 ingress:
   enabled: true
   hosts:
-    - host: portfolio.fullstackjam.dev
+    - host: portfolio.fullstackjam.com
   tlsSecret: portfolio-tls-certificate
