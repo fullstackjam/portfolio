@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.fullstackjam.com/portfolio
+  repository: fullstackjam/portfolio
   pullPolicy: Always
   tag: latest
 
