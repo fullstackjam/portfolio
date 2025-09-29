@@ -21,9 +21,9 @@ export class AppComponent {
 
   socialLinks = [
     { name: 'GitHub', url: 'https://github.com/fullstackjam', icon: 'fab fa-github' },
-    { name: 'LinkedIn', url: 'https://linkedin.com/in/fullstackjam', icon: 'fab fa-linkedin' },
+    { name: 'LinkedIn', url: 'https://linkedin.com/in/fullstackjam-ma-a817b5239/', icon: 'fab fa-linkedin' },
     { name: 'Twitter', url: 'https://twitter.com/fullstackjam', icon: 'fab fa-twitter' },
-    { name: 'Email', url: 'mailto:contact@fullstackjam.dev', icon: 'fas fa-envelope' }
+    { name: 'Email', url: 'mailto:fullstackjam@outlook.com', icon: 'fas fa-envelope' }
   ];
 
   about = {
@@ -57,31 +57,31 @@ export class AppComponent {
 
   projects = [
     {
-      name: 'E-Commerce Platform',
-      description: 'A full-stack e-commerce solution with real-time inventory management, payment processing, and admin dashboard.',
-      technologies: ['Angular', 'Node.js', 'PostgreSQL', 'Stripe API', 'Docker'],
-      github: 'https://github.com/fullstackjam/ecommerce-platform',
-      demo: 'https://ecommerce-demo.fullstackjam.dev'
+      name: 'Portfolio Website',
+      description: 'A modern, responsive portfolio website built with Angular showcasing projects, skills, and experience.',
+      technologies: ['Angular', 'TypeScript', 'CSS3', 'Responsive Design'],
+      github: 'https://github.com/fullstackjam/portfolio',
+      demo: 'https://portfolio.fullstackjam.com'
     },
     {
-      name: 'Task Management App',
-      description: 'Collaborative task management tool with real-time updates, team collaboration features, and project tracking.',
-      technologies: ['React', 'Express.js', 'MongoDB', 'Socket.io', 'Material-UI'],
-      github: 'https://github.com/fullstackjam/task-manager',
-      demo: 'https://tasks.fullstackjam.dev'
+      name: 'Blog Platform',
+      description: 'A full-stack blog platform with content management, user authentication, and modern web technologies.',
+      technologies: ['Next.js', 'React', 'Node.js', 'PostgreSQL', 'Tailwind CSS'],
+      github: 'https://github.com/fullstackjam/blog',
+      demo: 'https://blog.fullstackjam.com'
     },
     {
-      name: 'Weather Dashboard',
-      description: 'Real-time weather monitoring dashboard with data visualization, location-based forecasts, and historical data.',
-      technologies: ['Vue.js', 'Python', 'FastAPI', 'Chart.js', 'OpenWeather API'],
-      github: 'https://github.com/fullstackjam/weather-dashboard',
-      demo: 'https://weather.fullstackjam.dev'
+      name: 'K8s GitOps Infrastructure',
+      description: 'Kubernetes GitOps infrastructure with monitoring, uptime tracking, and automated deployments.',
+      technologies: ['Kubernetes', 'ArgoCD', 'Uptime Kuma', 'Docker', 'GitOps'],
+      github: 'https://github.com//k8s-gitops',
+      demo: 'https://uptime-kuma.fullstackjam.com'
     }
   ];
 
   contact = {
     message: 'Interested in working together? I\'m always open to discussing new opportunities and exciting projects!',
-    email: 'contact@fullstackjam.dev',
-    linkedin: 'https://linkedin.com/in/fullstackjam'
+    email: 'fullstackjam@outlook.com',
+    linkedin: 'https://linkedin.com/in/jam-ma-a817b5239/'
   };
 }

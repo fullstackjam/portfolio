@@ -443,7 +443,7 @@
   <header class="header">
     <div class="profile-section">
       <div class="avatar">
-        <img src="https://via.placeholder.com/150x150/4F46E5/FFFFFF?text=JS" alt="Profile Picture" class="avatar-img">
+        <img [src]="'https://github.com/' + githubUsername + '.png'" alt="Profile Picture" class="avatar-img">
       </div>
       <div class="profile-info">
         <h1 class="name">{{ profile.name }}</h1>
