@@ -1,0 +1,36 @@
+---
+import type { Repo } from '../../lib/types';
+import { PROJECT_BLURBS } from '../../data/profile';
+import RevealText from '../RevealText.tsx';
+import Reveal from '../Reveal.tsx';
+interface Props { repos: Repo[]; }
+const { repos } = Astro.props;
+const blurb = (r: Repo) => PROJECT_BLURBS[r.name] ?? r.description ?? '';
+---
+<section id="work" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
+  <p class="label">02 — selected work</p>
+  <h2 class="serif text-[clamp(2rem,5vw,4rem)] mt-6 mb-12">
+    <RevealText text="Things I have built." accent="built." client:visible />
+  </h2>
+  {repos.length > 0 ? (
+    <ul class="border-t rule-c">
+      {repos.map((r, i) => (
+        <Reveal client:visible delay={i * 0.05}>
+          <li>
+            <a href={r.url} target="_blank" rel="noopener"
+               class="group grid grid-cols-[auto_1fr_auto] gap-6 items-baseline py-8 border-b rule-c transition-[padding] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:pl-4">
+              <span class="label">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 class="serif text-3xl group-hover:[color:var(--accent)] transition-colors">{r.name}</h3>
+                <p class="font-sans muted mt-2 max-w-xl">{blurb(r)}</p>
+              </div>
+              <span class="label whitespace-nowrap">{[r.language, r.stars ? `★ ${r.stars}` : null].filter(Boolean).join('  ·  ')}</span>
+            </a>
+          </li>
+        </Reveal>
+      ))}
+    </ul>
+  ) : (
+    <p class="font-sans muted">Projects are loading from GitHub — check back in a moment.</p>
+  )}
+</section>
