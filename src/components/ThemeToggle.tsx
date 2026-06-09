@@ -8,10 +8,10 @@ function apply(theme: Theme) {
 }
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    const current = (document.documentElement.getAttribute('data-theme') as Theme) || 'dark';
+    const current = (document.documentElement.getAttribute('data-theme') as Theme) || 'light';
     setTheme(current);
     const handler = (e: Event) => {
       const next = (e as CustomEvent).detail as Theme;
@@ -23,7 +23,7 @@ export default function ThemeToggle() {
   }, []);
 
   const toggle = () => {
-    const cur = (document.documentElement.getAttribute('data-theme') as Theme) || 'dark';
+    const cur = (document.documentElement.getAttribute('data-theme') as Theme) || 'light';
     const next: Theme = cur === 'dark' ? 'light' : 'dark';
     apply(next);
     setTheme(next);
@@ -33,9 +33,10 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-      className="fixed top-4 right-4 z-[60] border rule px-3 py-1 text-xs uppercase tracking-widest"
+      className="fixed top-5 right-5 z-[60] label rule-c border rounded-full px-3 py-1.5 hover:[border-color:var(--accent)] hover:[color:var(--accent)] transition-colors"
+      style={{ background: 'color-mix(in srgb, var(--bg) 70%, transparent)', backdropFilter: 'blur(6px)' }}
     >
-      {theme === 'dark' ? '◐ light' : '◑ dark'}
+      {theme === 'dark' ? 'light' : 'dark'}
     </button>
   );
 }
