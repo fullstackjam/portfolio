@@ -1,23 +1,37 @@
 ---
 import type { ProfileData } from '../../lib/types';
-import CountUp from '../CountUp.tsx';
-interface Props { profile: ProfileData; }
-const { profile } = Astro.props;
-const stats = [
-  { value: profile.publicRepos, label: 'public repos' },
-  { value: profile.totalStars, label: 'total stars' },
-  { value: profile.followers, label: 'followers' },
+import { ABOUT } from '../../data/profile';
+import Reveal from '../Reveal.tsx';
+import RevealText from '../RevealText.tsx';
+interface Props { profile: ProfileData; sinceYear: number; topLanguages: string[]; }
+const { profile, sinceYear, topLanguages } = Astro.props;
+const facts = [
+  { k: 'On GitHub since', v: String(sinceYear) },
+  { k: 'Works mostly in', v: topLanguages.slice(0, 3).join(' · ') || '—' },
+  { k: 'Public repos', v: String(profile.publicRepos) },
 ];
 ---
-<section id="about" class="max-w-6xl mx-auto px-6 py-24 border-t rule">
-  <p class="text-[10px] uppercase tracking-[0.2em] dim">01 — about</p>
-  <p class="display text-[clamp(1.5rem,4vw,3rem)] mt-4 max-w-3xl">{profile.bio}</p>
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-px mt-12 border rule">
-    {stats.map((s) => (
-      <div class="p-6 border-r rule last:border-r-0">
-        <div class="display text-5xl accent"><CountUp to={s.value} client:visible /></div>
-        <div class="text-[11px] uppercase tracking-[0.15em] dim mt-2">{s.label}</div>
-      </div>
-    ))}
+<section id="about" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
+  <p class="label">01 — about</p>
+  <div class="grid md:grid-cols-[1fr_auto] gap-12 items-start mt-8">
+    <h2 class="serif text-[clamp(1.75rem,3.6vw,3rem)] max-w-2xl">
+      <RevealText text={ABOUT} accent="delightful" client:visible />
+    </h2>
+    <img
+      src={profile.avatarUrl}
+      alt={profile.name}
+      width="96" height="96" loading="lazy"
+      class="rounded-full w-24 h-24 object-cover border rule-c justify-self-start md:justify-self-end"
+    />
   </div>
+  <Reveal client:visible>
+    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-px mt-16 border rule-c">
+      {facts.map((f) => (
+        <div class="p-6 border-r rule-c last:border-r-0">
+          <dt class="label">{f.k}</dt>
+          <dd class="serif text-2xl mt-2">{f.v}</dd>
+        </div>
+      ))}
+    </dl>
+  </Reveal>
 </section>
