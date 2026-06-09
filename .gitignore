@@ -49,3 +49,8 @@ Thumbs.db
 
 # Wrangler
 .wrangler/
+
+# Environment variables
+.env
+.env.*
+!.env.example

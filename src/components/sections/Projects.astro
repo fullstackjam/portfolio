@@ -6,20 +6,24 @@ const { repos } = Astro.props;
 <section id="projects" class="max-w-6xl mx-auto px-6 py-24 border-t rule">
   <p class="text-[10px] uppercase tracking-[0.2em] dim">03 — projects</p>
   <h2 class="display text-[clamp(2rem,6vw,4rem)] mt-4">WORK</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-px mt-10 border rule">
-    {repos.map((r) => (
-      <a href={r.url} target="_blank" rel="noopener"
-         class="group block p-6 border-r border-b rule hover:[background:var(--accent)] hover:text-[var(--bg)] transition-colors">
-        <div class="flex justify-between items-start">
-          <h3 class="text-lg font-bold">{r.name}</h3>
-          <span class="text-xs dim group-hover:text-[var(--bg)]">★ {r.stars}</span>
-        </div>
-        <p class="text-sm mt-3 dim group-hover:text-[var(--bg)] min-h-[3rem]">{r.description ?? '—'}</p>
-        <div class="flex gap-3 mt-4 text-[11px] uppercase tracking-widest">
-          {r.language && <span>{r.language}</span>}
-          {r.topics.slice(0, 3).map((t) => <span class="dim group-hover:text-[var(--bg)]">#{t}</span>)}
-        </div>
-      </a>
-    ))}
-  </div>
+  {repos.length > 0 ? (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-px mt-10 border rule">
+      {repos.map((r) => (
+        <a href={r.url} target="_blank" rel="noopener"
+           class="group block p-6 border-r border-b rule hover:[background:var(--accent)] hover:text-[var(--bg)] transition-colors">
+          <div class="flex justify-between items-start">
+            <h3 class="text-lg font-bold">{r.name}</h3>
+            <span class="text-xs dim group-hover:text-[var(--bg)]">★ {r.stars}</span>
+          </div>
+          <p class="text-sm mt-3 dim group-hover:text-[var(--bg)] min-h-[3rem]">{r.description ?? '—'}</p>
+          <div class="flex gap-3 mt-4 text-[11px] uppercase tracking-widest">
+            {r.language && <span>{r.language}</span>}
+            {r.topics.slice(0, 3).map((t) => <span class="dim group-hover:text-[var(--bg)]">#{t}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <p class="mt-10 text-sm dim">// no repositories to display right now</p>
+  )}
 </section>
