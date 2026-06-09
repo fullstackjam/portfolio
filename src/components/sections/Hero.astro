@@ -1,20 +1,22 @@
 ---
 import type { ProfileData } from '../../lib/types';
-import { OVERRIDES } from '../../data/profile';
+import { POSITIONING } from '../../data/profile';
+import RevealText from '../RevealText.tsx';
+import MagneticLink from '../MagneticLink.tsx';
 interface Props { profile: ProfileData; }
 const { profile } = Astro.props;
 ---
-<header class="min-h-[88vh] flex flex-col justify-center max-w-6xl mx-auto px-6">
-  <div class="flex justify-between text-[10px] uppercase tracking-[0.2em] dim border-b rule pb-2">
-    <span>FULLSTACKJAM</span><span>PORTFOLIO ©2026</span>
+<header class="min-h-[92vh] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10">
+  <div class="flex justify-between label border-b rule-c pb-3">
+    <span>{profile.name}</span><span>Portfolio — 2026</span>
   </div>
-  <p class="mt-8 text-sm accent">jam@cloud ~ % whoami</p>
-  <h1 class="display text-[clamp(3rem,14vw,11rem)] mt-2">
-    FULL<br />STACK<span class="accent blink">_</span>
+  <h1 class="serif mt-12 text-[clamp(2.75rem,8vw,6.5rem)] max-w-4xl">
+    <RevealText text={POSITIONING.headline} accent={POSITIONING.accent} client:load />
   </h1>
-  <div class="flex flex-wrap gap-x-8 gap-y-2 mt-8 text-[11px] uppercase tracking-[0.15em] dim border-t rule pt-3">
-    <span>↳ {OVERRIDES.title}</span>
-    <span>{profile.location}</span>
-    {OVERRIDES.availableForWork && <span class="accent">● available for work</span>}
+  <p class="font-sans mt-8 max-w-xl text-lg leading-relaxed muted">{POSITIONING.subline}</p>
+  <div class="mt-12">
+    <MagneticLink href="#work" client:visible className="serif text-2xl italic accent ul">
+      selected work ↓
+    </MagneticLink>
   </div>
 </header>
