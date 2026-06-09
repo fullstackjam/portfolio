@@ -1,0 +1,38 @@
+---
+import type { LangStat } from '../../lib/types';
+import { CURATED_SKILLS } from '../../data/profile';
+import RevealText from '../RevealText.tsx';
+import Reveal from '../Reveal.tsx';
+interface Props { languages: LangStat[]; }
+const { languages } = Astro.props;
+const langNames = languages.map((l) => l.name);
+const tools = CURATED_SKILLS.filter((s) => !langNames.includes(s));
+const topLangs = languages.slice(0, 5);
+---
+<section id="stack" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
+  <p class="label">03 — stack</p>
+  <h2 class="serif text-[clamp(2rem,5vw,4rem)] mt-6 mb-12">
+    <RevealText text="Tools of the trade." accent="trade." client:visible />
+  </h2>
+  <Reveal client:visible>
+    <div class="grid md:grid-cols-2 gap-12">
+      <div>
+        <p class="label mb-4">most used on github</p>
+        <ul class="space-y-2">
+          {topLangs.map((l) => (
+            <li class="flex items-baseline justify-between border-b rule-c pb-2">
+              <span class="serif text-xl">{l.name}</span>
+              <span class="label">{l.pct}%</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="label mb-4">also working with</p>
+        <div class="flex flex-wrap gap-x-5 gap-y-3">
+          {tools.map((t) => <span class="serif text-xl italic">{t}</span>)}
+        </div>
+      </div>
+    </div>
+  </Reveal>
+</section>

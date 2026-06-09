@@ -1,10 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/sections/Hero.astro';
-import Terminal from '../components/Terminal.tsx';
 import About from '../components/sections/About.astro';
-import Skills from '../components/sections/Skills.astro';
-import Projects from '../components/sections/Projects.astro';
+import Work from '../components/sections/Work.astro';
+import Stack from '../components/sections/Stack.astro';
 import Activity from '../components/sections/Activity.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/Footer.astro';
@@ -19,15 +18,15 @@ try {
 } catch {
   data = snapshot as GitHubData;
 }
+
+const sinceYear = 2021;
+const topLanguages = data.languages.map((l) => l.name);
 ---
-<Base title="fullstackjam — fullstack engineer">
+<Base title="fullstackjam — reliable systems, delightful interfaces">
   <Hero profile={data.profile} />
-  <div class="max-w-6xl mx-auto px-6 -mt-10 mb-10">
-    <Terminal client:load />
-  </div>
-  <About profile={data.profile} />
-  <Skills languages={data.languages} />
-  <Projects repos={data.repos} />
+  <About profile={data.profile} sinceYear={sinceYear} topLanguages={topLanguages} />
+  <Work repos={data.repos} />
+  <Stack languages={data.languages} />
   <Activity contributions={data.contributions} total={data.totalContributions} />
   <Contact />
   <Footer />

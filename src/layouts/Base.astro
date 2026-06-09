@@ -1,11 +1,12 @@
 ---
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.tsx';
+import SmoothScroll from '../components/SmoothScroll.tsx';
 interface Props { title: string; description?: string; }
-const { title, description = 'Fullstack engineer · DevOps · Cloud' } = Astro.props;
+const { title, description = 'Fullstack engineer — reliable systems, delightful interfaces.' } = Astro.props;
 ---
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -14,18 +15,18 @@ const { title, description = 'Fullstack engineer · DevOps · Cloud' } = Astro.p
     <link rel="icon" href="https://github.com/fullstackjam.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <script is:inline>
-      // No-flash theme init before paint
       (function () {
         try {
-          var t = localStorage.getItem('theme') || 'dark';
+          var t = localStorage.getItem('theme') || 'light';
           document.documentElement.setAttribute('data-theme', t);
         } catch (e) {}
       })();
     </script>
   </head>
-  <body class="scanlines">
+  <body>
+    <SmoothScroll client:load />
     <ThemeToggle client:load />
     <slot />
   </body>

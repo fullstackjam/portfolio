@@ -1,15 +1,19 @@
 ---
 import type { ContributionDay } from '../../lib/types';
 import Heatmap from '../Heatmap.tsx';
+import RevealText from '../RevealText.tsx';
+import Reveal from '../Reveal.tsx';
 interface Props { contributions: ContributionDay[]; total: number; }
 const { contributions, total } = Astro.props;
 ---
 {contributions.length > 0 && (
-  <section id="activity" class="max-w-6xl mx-auto px-6 py-24 border-t rule">
-    <p class="text-[10px] uppercase tracking-[0.2em] dim">04 — activity</p>
-    <h2 class="display text-[clamp(2rem,6vw,4rem)] mt-4">{total} <span class="accent">contributions</span></h2>
-    <div class="mt-10">
-      <Heatmap days={contributions} client:visible />
-    </div>
+  <section id="activity" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
+    <p class="label">04 — activity</p>
+    <h2 class="serif text-[clamp(2rem,5vw,4rem)] mt-6 mb-12">
+      <RevealText text={`${total} contributions, still counting.`} accent="counting." client:visible />
+    </h2>
+    <Reveal client:visible>
+      <Heatmap days={contributions} />
+    </Reveal>
   </section>
 )}
