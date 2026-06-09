@@ -14,15 +14,14 @@ export const POSITIONING = {
     'Fullstack engineer working across the web, Kubernetes, and the cloud — from GitOps pipelines to the pixels people actually touch.',
 };
 
-/** About narrative — specific, drawn from real repos (k8s-gitops, canary-deployment, Go, dotfiles). */
+/** About narrative — specific, drawn from real repos (k8s-gitops, Go, dotfiles). */
 export const ABOUT =
-  "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a fully GitOps-managed cluster, canary deployments, and a development environment I can reproduce from a single clone. I care about systems that stay up, and interfaces that feel good to use.";
+  "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a fully GitOps-managed cluster, progressive delivery, and a development environment I can reproduce from a single clone. I care about systems that stay up, and interfaces that feel good to use.";
 
 /** Curated order for the Selected Work section; the rest fill in by stars. */
 export const FEATURED_REPOS = [
   'k8s-gitops',
-  'canary-deployment',
-  'flask-watchlist',
+  'lark-coding-agent-bridge',
   'dotfiles',
   'blog',
   'portfolio',
@@ -31,8 +30,6 @@ export const FEATURED_REPOS = [
 /** One-line "what it solves" per repo. Repos without an entry fall back to their GitHub description. */
 export const PROJECT_BLURBS: Record<string, string> = {
   'k8s-gitops': 'A fully version-controlled Kubernetes cluster — infrastructure as code, reconciled by GitOps.',
-  'canary-deployment': 'Progressive, low-risk releases — canary rollouts for Kubernetes workloads.',
-  'flask-watchlist': 'A small but complete web app — auth, persistence, and a clean UI on Flask.',
   dotfiles: 'My entire development environment, reproducible from a single clone.',
   blog: 'Notes and writing, built and hosted on my own stack.',
   portfolio: 'This site — Astro on Cloudflare Workers, rendered live from GitHub.',
