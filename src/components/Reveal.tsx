@@ -1,18 +1,23 @@
 import { motion, useInView } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
-/** Reveals its children (fade + rise) once when scrolled into view. SSR-visible; static under reduced-motion. */
+const useIso = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
+
+/** Reveals its children (fade + rise) once when scrolled into view. SSR-visible; static under reduced-motion; no above-fold flash. */
 export default function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-10% 0px' });
-  const [animated, setAnimated] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
-    setAnimated(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useIso(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = ref.current;
+    if (!el) return;
+    if (el.getBoundingClientRect().top > window.innerHeight * 0.9) setHidden(true);
   }, []);
 
-  const visible = !animated || inView;
+  const visible = !hidden || inView;
   return (
     <motion.div
       ref={ref}

@@ -1,5 +1,8 @@
 import { motion, useInView } from 'motion/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+
+// useLayoutEffect on the client (runs before paint, avoids flash); useEffect on the server (no SSR warning).
+const useIso = typeof document !== 'undefined' ? useLayoutEffect : useEffect;
 
 interface Props {
   text: string;
@@ -8,23 +11,28 @@ interface Props {
   delay?: number;
 }
 
-/** Splits a heading into words and reveals them with a gentle upward stagger. SSR-visible; static under reduced-motion. */
+/** Splits a heading into words and reveals them with a gentle upward stagger. SSR-visible; static under reduced-motion; no above-fold flash. */
 export default function RevealText({ text, accent, className = '', delay = 0 }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: '-10% 0px' });
-  const [animated, setAnimated] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
-  useEffect(() => {
-    setAnimated(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useIso(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = ref.current;
+    if (!el) return;
+    // Only pre-hide elements that start below the fold; above-fold stays visible (no flash).
+    if (el.getBoundingClientRect().top > window.innerHeight * 0.9) setHidden(true);
   }, []);
 
   const words = text.split(' ');
-  const show = !animated || inView;
+  const show = !hidden || inView;
+  const accentNorm = accent ? accent.replace(/[.,]/g, '') : undefined;
 
   return (
     <span ref={ref} className={className} style={{ display: 'inline-block' }}>
       {words.map((w, i) => {
-        const isAccent = accent && w.replace(/[.,]/g, '') === accent;
+        const isAccent = accentNorm && w.replace(/[.,]/g, '') === accentNorm;
         return (
           <span key={i} style={{ display: 'inline-block', overflow: 'hidden' }}>
             <motion.span

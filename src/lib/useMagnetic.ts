@@ -22,9 +22,11 @@ export function useMagnetic<T extends HTMLElement>(radius = 120, strength = 0.4)
 
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('scroll', reset, { passive: true });
+    document.addEventListener('pointerleave', reset);
     return () => {
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('scroll', reset);
+      document.removeEventListener('pointerleave', reset);
     };
   }, [radius, strength]);
 
