@@ -1,6 +1,6 @@
 import type { Repo, LangStat, GitHubData, ProfileData, ContributionDay } from './types';
 import { cached } from './cache';
-import { GITHUB_USER, OVERRIDES } from '../data/profile';
+import { GITHUB_USER, OVERRIDES, FEATURED_REPOS } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
@@ -45,6 +45,25 @@ export function selectTopRepos(repos: RawRepo[], limit: number): Repo[] {
     .sort((a, b) => b.stargazers_count - a.stargazers_count)
     .slice(0, limit)
     .map(mapRepo);
+}
+
+/**
+ * Order curated `featured` repos first (in list order), then the remaining
+ * repos by stars descending. De-dupes and slices to `limit`.
+ */
+export function selectFeaturedRepos(repos: Repo[], featured: string[], limit: number): Repo[] {
+  const byName = new Map(repos.map((r) => [r.name, r]));
+  const seen = new Set<string>();
+  const picked: Repo[] = [];
+  for (const name of featured) {
+    const r = byName.get(name);
+    if (r && !seen.has(name)) {
+      picked.push(r);
+      seen.add(name);
+    }
+  }
+  const rest = repos.filter((r) => !seen.has(r.name)).sort((a, b) => b.stars - a.stars);
+  return [...picked, ...rest].slice(0, limit);
 }
 
 export function aggregateLanguages(repos: { language: string | null }[]): LangStat[] {
@@ -113,7 +132,7 @@ async function fetchContributions(token: string): Promise<{ days: ContributionDa
 async function fetchAll(token?: string): Promise<GitHubData> {
   const user = (await ghJson(`${API}/users/${GITHUB_USER}`, token)) as RawUser;
   if (!user || typeof user.login !== 'string') throw new Error('GitHub: unexpected user payload');
-  const rawRepos = await ghJson(`${API}/users/${GITHUB_USER}/repos?per_page=100&sort=updated`, token);
+  const rawRepos = (await ghJson(`${API}/users/${GITHUB_USER}/repos?per_page=100&sort=updated`, token)) as RawRepo[];
 
   const profile: ProfileData = {
     name: user.name || user.login,
@@ -125,7 +144,8 @@ async function fetchAll(token?: string): Promise<GitHubData> {
     totalStars: sumStars(rawRepos),
   };
 
-  const repos: Repo[] = selectTopRepos(rawRepos, 6);
+  const nonFork: Repo[] = rawRepos.filter((r) => !r.fork).map(mapRepo);
+  const repos: Repo[] = selectFeaturedRepos(nonFork, FEATURED_REPOS, 6);
   const languages: LangStat[] = aggregateLanguages(rawRepos);
 
   let contributions: ContributionDay[] = [];
