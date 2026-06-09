@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "portfolio",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "kv_namespaces": [
+    { "binding": "GITHUB_CACHE", "id": "PLACEHOLDER_REPLACE_WITH_KV_ID" }
+  ],
+  "observability": { "enabled": true }
+}
