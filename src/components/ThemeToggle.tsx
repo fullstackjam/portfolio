@@ -13,7 +13,11 @@ export default function ThemeToggle() {
   useEffect(() => {
     const current = (document.documentElement.getAttribute('data-theme') as Theme) || 'dark';
     setTheme(current);
-    const handler = (e: Event) => setTheme((e as CustomEvent).detail as Theme);
+    const handler = (e: Event) => {
+      const next = (e as CustomEvent).detail as Theme;
+      apply(next);
+      setTheme(next);
+    };
     window.addEventListener('themechange', handler);
     return () => window.removeEventListener('themechange', handler);
   }, []);
@@ -27,7 +31,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      aria-label="Toggle theme"
+      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
       className="fixed top-4 right-4 z-[60] border rule px-3 py-1 text-xs uppercase tracking-widest"
     >
       {theme === 'dark' ? '◐ light' : '◑ dark'}
