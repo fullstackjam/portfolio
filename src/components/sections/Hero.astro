@@ -1,0 +1,20 @@
+---
+import type { ProfileData } from '../../lib/types';
+import { OVERRIDES } from '../../data/profile';
+interface Props { profile: ProfileData; }
+const { profile } = Astro.props;
+---
+<header class="min-h-[88vh] flex flex-col justify-center max-w-6xl mx-auto px-6">
+  <div class="flex justify-between text-[10px] uppercase tracking-[0.2em] dim border-b rule pb-2">
+    <span>FULLSTACKJAM</span><span>PORTFOLIO ©2026</span>
+  </div>
+  <p class="mt-8 text-sm accent">jam@cloud ~ % whoami</p>
+  <h1 class="display text-[clamp(3rem,14vw,11rem)] mt-2">
+    FULL<br />STACK<span class="accent blink">_</span>
+  </h1>
+  <div class="flex flex-wrap gap-x-8 gap-y-2 mt-8 text-[11px] uppercase tracking-[0.15em] dim border-t rule pt-3">
+    <span>↳ {OVERRIDES.title}</span>
+    <span>{profile.location}</span>
+    {OVERRIDES.availableForWork && <span class="accent">● available for work</span>}
+  </div>
+</header>

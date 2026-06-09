@@ -43,3 +43,14 @@ Thumbs.db
 
 # Superpowers brainstorm companion
 .superpowers/
+
+# Astro
+.astro/
+
+# Wrangler
+.wrangler/
+
+# Environment variables
+.env
+.env.*
+!.env.example

@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+:root {
+  --bg: #08090b;
+  --fg: #eaeaea;
+  --accent: #3ad17c;
+  --dim: #5b6b5f;
+  --rule: #1c2620;
+}
+
+:root[data-theme='light'] {
+  --bg: #efeae0;
+  --fg: #111111;
+  --accent: #c2300f;
+  --dim: #9a9384;
+  --rule: #111111;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* CRT scanline overlay — dark theme only */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+}
+:root[data-theme='light'] .scanlines::after { display: none; }
+
+.display {
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+}
+
+.rule { border-color: var(--rule); }
+.accent { color: var(--accent); }
+.dim { color: var(--dim); }
+
+::selection { background: var(--accent); color: var(--bg); }
+
+.blink { animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }

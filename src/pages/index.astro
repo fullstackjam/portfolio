@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import Terminal from '../components/Terminal.tsx';
+import About from '../components/sections/About.astro';
+import Skills from '../components/sections/Skills.astro';
+import Projects from '../components/sections/Projects.astro';
+import Activity from '../components/sections/Activity.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/Footer.astro';
+import { getGitHubData } from '../lib/github';
+import snapshot from '../data/github-snapshot.json';
+import type { GitHubData } from '../lib/types';
+
+let data: GitHubData;
+try {
+  const { env } = Astro.locals.runtime;
+  data = await getGitHubData(env);
+} catch {
+  data = snapshot as GitHubData;
+}
+---
+<Base title="fullstackjam — fullstack engineer">
+  <Hero profile={data.profile} />
+  <div class="max-w-6xl mx-auto px-6 -mt-10 mb-10">
+    <Terminal client:load />
+  </div>
+  <About profile={data.profile} />
+  <Skills languages={data.languages} />
+  <Projects repos={data.repos} />
+  <Activity contributions={data.contributions} total={data.totalContributions} />
+  <Contact />
+  <Footer />
+</Base>
