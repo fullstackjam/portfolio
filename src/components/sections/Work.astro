@@ -15,8 +15,8 @@ const blurb = (r: Repo) => PROJECT_BLURBS[r.name] ?? r.description ?? '';
   {repos.length > 0 ? (
     <ul class="border-t rule-c">
       {repos.map((r, i) => (
-        <Reveal client:visible delay={i * 0.05}>
-          <li>
+        <li>
+          <Reveal client:visible delay={i * 0.05}>
             <a href={r.url} target="_blank" rel="noopener"
                class="group grid grid-cols-[auto_1fr_auto] gap-6 items-baseline py-8 border-b rule-c transition-[padding] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:pl-4">
               <span class="label">{String(i + 1).padStart(2, '0')}</span>
@@ -26,8 +26,8 @@ const blurb = (r: Repo) => PROJECT_BLURBS[r.name] ?? r.description ?? '';
               </div>
               <span class="label whitespace-nowrap">{[r.language, r.stars ? `★ ${r.stars}` : null].filter(Boolean).join('  ·  ')}</span>
             </a>
-          </li>
-        </Reveal>
+          </Reveal>
+        </li>
       ))}
     </ul>
   ) : (

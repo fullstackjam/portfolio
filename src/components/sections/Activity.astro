@@ -13,7 +13,7 @@ const { contributions, total } = Astro.props;
       <RevealText text={`${total} contributions, still counting.`} accent="counting." client:visible />
     </h2>
     <Reveal client:visible>
-      <Heatmap days={contributions} client:visible />
+      <Heatmap days={contributions} />
     </Reveal>
   </section>
 )}
