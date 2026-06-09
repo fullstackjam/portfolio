@@ -8,5 +8,8 @@
   "kv_namespaces": [
     { "binding": "GITHUB_CACHE", "id": "7c66475ef72e47c581974dc5d219c348" }
   ],
+  "routes": [
+    { "pattern": "fullstackjam.com", "custom_domain": true }
+  ],
   "observability": { "enabled": true }
 }
