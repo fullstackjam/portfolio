@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "wrangler dev",
-    "deploy": "astro build && wrangler deploy",
+    "postbuild": "echo _worker.js > dist/.assetsignore",
+    "preview": "astro build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -27,6 +28,6 @@
     "@types/react-dom": "^19.0.0",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0",
-    "wrangler": "^3.90.0"
+    "wrangler": "^4.98.0"
   }
 }
