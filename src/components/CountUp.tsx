@@ -8,6 +8,11 @@ export default function CountUp({ to, suffix = '' }: { to: number; suffix?: stri
 
   useEffect(() => {
     if (!inView) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setN(to);
+      return;
+    }
     const controls = animate(0, to, {
       duration: 1.2,
       onUpdate: (v) => setN(Math.round(v)),

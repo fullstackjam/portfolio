@@ -7,15 +7,22 @@ const INTRO: Line[] = [
   { prompt: false, text: "type 'help' to explore. try: about · projects · theme · neofetch" },
 ];
 
+function scrollBehavior(): ScrollBehavior {
+  return typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? 'auto'
+    : 'smooth';
+}
+
 export default function Terminal() {
   const [lines, setLines] = useState<Line[]>(INTRO);
   const [value, setValue] = useState('');
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const result = runCommand(value);
-    const echoed: Line[] = [{ prompt: true, text: value }];
 
     if (result.action?.type === 'clear') {
       setLines([]);
@@ -23,7 +30,7 @@ export default function Terminal() {
       return;
     }
     if (result.action?.type === 'scroll') {
-      document.getElementById(result.action.value)?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById(result.action.value)?.scrollIntoView({ behavior: scrollBehavior() });
     }
     if (result.action?.type === 'theme') {
       const root = document.documentElement;
@@ -34,13 +41,19 @@ export default function Terminal() {
       window.dispatchEvent(new CustomEvent('themechange', { detail: next }));
     }
 
+    const echoed: Line[] = value.trim() ? [{ prompt: true, text: value }] : [];
     setLines((prev) => [...prev, ...echoed, ...result.output.map((t) => ({ prompt: false, text: t }))]);
     setValue('');
-    setTimeout(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }), 0);
+    setTimeout(() => endRef.current?.scrollIntoView({ behavior: scrollBehavior() }), 0);
   };
 
   return (
-    <div className="border rule p-4 text-sm h-72 overflow-y-auto">
+    <div
+      role="region"
+      aria-label="interactive terminal"
+      className="border rule p-4 text-sm h-72 overflow-y-auto"
+      onClick={() => inputRef.current?.focus()}
+    >
       {lines.map((l, i) => (
         <div key={i}>
           {l.prompt && <span className="dim">jam@cloud ~ % </span>}
@@ -50,7 +63,7 @@ export default function Terminal() {
       <form onSubmit={submit} className="flex">
         <span className="accent">jam@cloud ~ % </span>
         <input
-          autoFocus
+          ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.currentTarget.value)}
           aria-label="terminal input"

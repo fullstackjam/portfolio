@@ -23,7 +23,8 @@ export default function ThemeToggle() {
   }, []);
 
   const toggle = () => {
-    const next: Theme = theme === 'dark' ? 'light' : 'dark';
+    const cur = (document.documentElement.getAttribute('data-theme') as Theme) || 'dark';
+    const next: Theme = cur === 'dark' ? 'light' : 'dark';
     apply(next);
     setTheme(next);
   };
