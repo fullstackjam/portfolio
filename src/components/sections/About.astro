@@ -1,0 +1,23 @@
+---
+import type { ProfileData } from '../../lib/types';
+import CountUp from '../CountUp.tsx';
+interface Props { profile: ProfileData; }
+const { profile } = Astro.props;
+const stats = [
+  { value: profile.publicRepos, label: 'public repos' },
+  { value: profile.totalStars, label: 'total stars' },
+  { value: profile.followers, label: 'followers' },
+];
+---
+<section id="about" class="max-w-6xl mx-auto px-6 py-24 border-t rule">
+  <p class="text-[10px] uppercase tracking-[0.2em] dim">01 — about</p>
+  <p class="display text-[clamp(1.5rem,4vw,3rem)] mt-4 max-w-3xl">{profile.bio}</p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-px mt-12 border rule">
+    {stats.map((s) => (
+      <div class="p-6 border-r rule last:border-r-0">
+        <div class="display text-5xl accent"><CountUp to={s.value} client:visible /></div>
+        <div class="text-[11px] uppercase tracking-[0.15em] dim mt-2">{s.label}</div>
+      </div>
+    ))}
+  </div>
+</section>
