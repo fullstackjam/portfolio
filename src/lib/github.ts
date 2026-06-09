@@ -4,6 +4,16 @@ import { GITHUB_USER, OVERRIDES } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
+interface RawUser {
+  login: string;
+  name: string | null;
+  bio: string | null;
+  location: string | null;
+  avatar_url: string;
+  followers: number;
+  public_repos: number;
+}
+
 interface RawRepo {
   name: string;
   description: string | null;
@@ -24,7 +34,7 @@ export function mapRepo(r: RawRepo): Repo {
     stars: r.stargazers_count,
     forks: r.forks_count,
     topics: r.topics ?? [],
-    homepage: r.homepage || null,
+    homepage: r.homepage?.trim() || null,
     url: r.html_url,
   };
 }
@@ -50,6 +60,14 @@ export function aggregateLanguages(repos: { language: string | null }[]): LangSt
     .sort((a, b) => b.pct - a.pct);
 }
 
+export function contributionLevel(count: number): ContributionDay['level'] {
+  if (count === 0) return 0;
+  if (count < 3) return 1;
+  if (count < 6) return 2;
+  if (count < 10) return 3;
+  return 4;
+}
+
 export function sumStars(repos: RawRepo[]): number {
   return repos.reduce((s, r) => s + r.stargazers_count, 0);
 }
@@ -72,8 +90,6 @@ async function ghJson(url: string, token?: string): Promise<any> {
   return res.json();
 }
 
-const LEVELS: Record<number, ContributionDay['level']> = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 };
-
 async function fetchContributions(token: string): Promise<{ days: ContributionDay[]; total: number }> {
   const query = `query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount}}}}}}`;
   const res = await fetch(GQL, {
@@ -85,17 +101,18 @@ async function fetchContributions(token: string): Promise<{ days: ContributionDa
   const json = await res.json();
   const cal = json.data.user.contributionsCollection.contributionCalendar;
   const days: ContributionDay[] = cal.weeks.flatMap((w: any) =>
-    w.contributionDays.map((d: any) => {
-      const c = d.contributionCount as number;
-      const level = c === 0 ? 0 : c < 3 ? 1 : c < 6 ? 2 : c < 10 ? 3 : 4;
-      return { date: d.date, count: c, level: LEVELS[level] };
-    }),
+    w.contributionDays.map((d: any) => ({
+      date: d.date,
+      count: d.contributionCount as number,
+      level: contributionLevel(d.contributionCount as number),
+    })),
   );
   return { days, total: cal.totalContributions };
 }
 
 async function fetchAll(token?: string): Promise<GitHubData> {
-  const user = await ghJson(`${API}/users/${GITHUB_USER}`, token);
+  const user = (await ghJson(`${API}/users/${GITHUB_USER}`, token)) as RawUser;
+  if (!user || typeof user.login !== 'string') throw new Error('GitHub: unexpected user payload');
   const rawRepos = await ghJson(`${API}/users/${GITHUB_USER}/repos?per_page=100&sort=updated`, token);
 
   const profile: ProfileData = {
@@ -118,8 +135,8 @@ async function fetchAll(token?: string): Promise<GitHubData> {
       const c = await fetchContributions(token);
       contributions = c.days;
       totalContributions = c.total;
-    } catch {
-      // contributions are optional; degrade gracefully
+    } catch (err) {
+      console.warn('GitHub contributions unavailable:', err instanceof Error ? err.message : err);
     }
   }
 
