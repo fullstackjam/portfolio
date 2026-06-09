@@ -1,15 +1,25 @@
 ---
 import { SOCIAL_LINKS } from '../../data/profile';
+import RevealText from '../RevealText.tsx';
+import MagneticLink from '../MagneticLink.tsx';
+const email = SOCIAL_LINKS.find((l) => l.name === 'Email');
+const others = SOCIAL_LINKS.filter((l) => l.name !== 'Email');
 ---
-<section id="contact" class="max-w-6xl mx-auto px-6 py-24 border-t rule">
-  <p class="text-[10px] uppercase tracking-[0.2em] dim">05 — contact</p>
-  <h2 class="display text-[clamp(2.5rem,9vw,7rem)] mt-4">LET'S<br />TALK<span class="accent blink">_</span></h2>
-  <div class="flex flex-wrap gap-px mt-10 border rule">
-    {SOCIAL_LINKS.map((l) => (
-      <a href={l.url} target="_blank" rel="noopener"
-         class="px-6 py-4 border-r rule text-sm uppercase tracking-widest hover:[background:var(--accent)] hover:text-[var(--bg)] transition-colors">
-        {l.name} →
-      </a>
+<section id="contact" class="max-w-5xl mx-auto px-6 sm:px-10 py-32 border-t rule-c">
+  <p class="label">05 — contact</p>
+  <h2 class="serif text-[clamp(2.5rem,8vw,6rem)] mt-6 max-w-3xl">
+    <RevealText text="Let's build something good together." accent="good" client:visible />
+  </h2>
+  {email && (
+    <div class="mt-10">
+      <MagneticLink href={email.url} client:visible className="serif italic text-3xl accent ul">
+        {email.url.replace('mailto:', '')}
+      </MagneticLink>
+    </div>
+  )}
+  <div class="flex flex-wrap gap-x-8 gap-y-3 mt-12 label">
+    {others.map((l) => (
+      <a href={l.url} target="_blank" rel="noopener" class="hover:[color:var(--accent)] transition-colors">{l.name} ↗</a>
     ))}
   </div>
 </section>
