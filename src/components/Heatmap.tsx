@@ -1,6 +1,6 @@
 import type { ContributionDay } from '../lib/types';
 
-const COLORS = ['var(--rule)', '#1f7a4a', '#2aa866', '#3ad17c', '#7af0a8'];
+const COLORS = ['var(--hm-0)', 'var(--hm-1)', 'var(--hm-2)', 'var(--hm-3)', 'var(--hm-4)'];
 
 export default function Heatmap({ days }: { days: ContributionDay[] }) {
   const weeks: ContributionDay[][] = [];
@@ -14,7 +14,7 @@ export default function Heatmap({ days }: { days: ContributionDay[] }) {
             <div
               key={d.date}
               title={`${d.date}: ${d.count}`}
-              style={{ width: '11px', height: '11px', background: COLORS[d.level] }}
+              style={{ width: '11px', height: '11px', borderRadius: '2px', background: COLORS[d.level] }}
             />
           ))}
         </div>
