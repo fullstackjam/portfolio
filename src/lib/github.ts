@@ -1,4 +1,4 @@
-import type { Repo, LangStat, GitHubData, ProfileData, ContributionDay } from './types';
+import type { LangStat, GitHubData, ProfileData, ContributionDay } from './types';
 import { cached } from './cache';
 import { GITHUB_USER, OVERRIDES } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
@@ -24,46 +24,6 @@ interface RawRepo {
   homepage: string | null;
   html_url: string;
   fork: boolean;
-}
-
-export function mapRepo(r: RawRepo): Repo {
-  return {
-    name: r.name,
-    description: r.description,
-    language: r.language,
-    stars: r.stargazers_count,
-    forks: r.forks_count,
-    topics: r.topics ?? [],
-    homepage: r.homepage?.trim() || null,
-    url: r.html_url,
-  };
-}
-
-export function selectTopRepos(repos: RawRepo[], limit: number): Repo[] {
-  return repos
-    .filter((r) => !r.fork)
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-    .slice(0, limit)
-    .map(mapRepo);
-}
-
-/**
- * Order curated `featured` repos first (in list order), then the remaining
- * repos by stars descending. De-dupes and slices to `limit`.
- */
-export function selectFeaturedRepos(repos: Repo[], featured: string[], limit: number): Repo[] {
-  const byName = new Map(repos.map((r) => [r.name, r]));
-  const seen = new Set<string>();
-  const picked: Repo[] = [];
-  for (const name of featured) {
-    const r = byName.get(name);
-    if (r && !seen.has(name)) {
-      picked.push(r);
-      seen.add(name);
-    }
-  }
-  const rest = repos.filter((r) => !seen.has(r.name)).sort((a, b) => b.stars - a.stars);
-  return [...picked, ...rest].slice(0, limit);
 }
 
 export function aggregateLanguages(repos: { language: string | null }[]): LangStat[] {
