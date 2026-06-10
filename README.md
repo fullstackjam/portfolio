@@ -1,6 +1,6 @@
-# fullstackjam — portfolio
+# fullstackjam — personal site
 
-A design-forward personal portfolio with a **Terminal × Brutalist Editorial**
+A design-forward personal site with a **Terminal × Brutalist Editorial**
 aesthetic. Server-rendered on Cloudflare Workers, with live data from GitHub.
 → [fullstackjam.com](https://fullstackjam.com)
 

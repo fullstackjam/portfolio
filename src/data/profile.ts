@@ -16,7 +16,7 @@ export const POSITIONING = {
     'Fullstack engineer working across the web, Kubernetes, and the cloud — from GitOps pipelines to the pixels people actually touch.',
 };
 
-/** About narrative — specific, drawn from real repos (k8s-gitops, Go, dotfiles). */
+/** About narrative — specific, drawn from real repos (k8s-gitops, openboot, Go). */
 export const ABOUT =
   "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a fully GitOps-managed cluster, progressive delivery, and a development environment I can reproduce from a single clone. I care about systems that stay up, and interfaces that feel good to use.";
 
@@ -43,14 +43,14 @@ export const PROJECTS: Repo[] = [
     url: 'https://github.com/fullstackjam/lark-coding-agent-bridge',
   },
   {
-    name: 'dotfiles',
-    description: 'My entire development environment, reproducible from a single clone.',
-    language: 'Shell',
+    name: 'openboot',
+    description: 'Set up a Mac dev environment in one command — CLI, web dashboard, team sharing.',
+    language: 'Go',
     stars: 0,
     forks: 0,
-    topics: ['dotfiles', 'neovim', 'zsh'],
+    topics: ['cli', 'tui', 'dev-environment', 'macos'],
     homepage: null,
-    url: 'https://github.com/fullstackjam/dotfiles',
+    url: 'https://github.com/openbootdotdev/openboot',
   },
   {
     name: 'blog',
@@ -61,16 +61,6 @@ export const PROJECTS: Repo[] = [
     topics: ['astro', 'blog'],
     homepage: null,
     url: 'https://github.com/fullstackjam/blog',
-  },
-  {
-    name: 'portfolio',
-    description: 'This site — Astro on Cloudflare Workers, rendered live from GitHub.',
-    language: 'TypeScript',
-    stars: 0,
-    forks: 0,
-    topics: ['astro', 'cloudflare'],
-    homepage: null,
-    url: 'https://github.com/fullstackjam/portfolio',
   },
 ];
 

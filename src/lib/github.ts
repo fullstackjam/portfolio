@@ -56,7 +56,7 @@ const GQL = 'https://api.github.com/graphql';
 
 function headers(token?: string): Record<string, string> {
   const h: Record<string, string> = {
-    'User-Agent': 'fullstackjam-portfolio',
+    'User-Agent': 'fullstackjam-site',
     Accept: 'application/vnd.github+json',
   };
   if (token) h.Authorization = `Bearer ${token}`;
