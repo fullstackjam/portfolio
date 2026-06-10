@@ -1,7 +1,10 @@
 ---
 const year = new Date().getFullYear();
 ---
-<footer class="max-w-5xl mx-auto px-6 sm:px-10 py-10 border-t rule-c label flex justify-between">
-  <span>© {year} fullstackjam</span>
-  <span>Astro · Cloudflare Workers</span>
+<footer class="border-t hairline">
+  <div class="container-x py-10 flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 label">
+    <span>© {year} fullstackjam</span>
+    <span class="normal-case tracking-[0.14em]">Astro · Cloudflare Workers · Instrument Serif / Inter</span>
+    <a href="#" class="hover:[color:var(--accent)] transition-colors">Back to top ↑</a>
+  </div>
 </footer>

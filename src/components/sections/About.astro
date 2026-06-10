@@ -1,37 +1,47 @@
 ---
 import type { ProfileData } from '../../lib/types';
 import { ABOUT } from '../../data/profile';
-import Reveal from '../Reveal.tsx';
 import RevealText from '../RevealText.tsx';
+import CountUp from '../CountUp.tsx';
 interface Props { profile: ProfileData; sinceYear: number; topLanguages: string[]; }
 const { profile, sinceYear, topLanguages } = Astro.props;
-const facts = [
-  { k: 'On GitHub since', v: String(sinceYear) },
-  { k: 'Works mostly in', v: topLanguages.slice(0, 3).join(' · ') || '—' },
-  { k: 'Public repos', v: String(profile.publicRepos) },
+const stats = [
+  { label: 'Public repositories', value: profile.publicRepos, count: true },
+  { label: 'GitHub stars', value: profile.totalStars, count: true },
+  { label: 'Shipping since', value: sinceYear, count: false },
 ];
 ---
-<section id="about" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
-  <p class="label">01 — about</p>
-  <div class="grid md:grid-cols-[1fr_auto] gap-12 items-start mt-8">
-    <h2 class="serif text-[clamp(1.75rem,3.6vw,3rem)] max-w-2xl">
-      <RevealText text={ABOUT} accent="good" client:visible />
-    </h2>
-    <img
-      src={profile.avatarUrl}
-      alt={profile.name}
-      width="96" height="96" loading="lazy"
-      class="rounded-full w-24 h-24 object-cover border rule-c justify-self-start md:justify-self-end"
-    />
+<section id="about" class="container-x py-28 sm:py-40 border-t hairline">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-12">
+    <div class="lg:col-span-3">
+      <div class="lg:sticky lg:top-10 flex lg:flex-col items-center lg:items-start gap-6">
+        <p class="label">01 — About</p>
+        <img
+          src={profile.avatarUrl}
+          alt={profile.name}
+          width="80" height="80" loading="lazy"
+          class="avatar rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover border hairline"
+        />
+      </div>
+    </div>
+    <div class="lg:col-span-9 lg:col-start-4">
+      <h2 class="serif text-[clamp(1.7rem,3.2vw,3rem)] leading-[1.25] max-w-3xl">
+        <RevealText text={ABOUT} accent="good" client:visible />
+      </h2>
+      <p class="label mt-10">
+        Works mostly in — <span class="normal-case tracking-[0.14em]">{topLanguages.slice(0, 3).join(' / ') || '—'}</span>
+      </p>
+    </div>
   </div>
-  <Reveal client:visible>
-    <dl class="grid grid-cols-1 sm:grid-cols-3 gap-px mt-16 border rule-c">
-      {facts.map((f) => (
-        <div class="p-6 border-r rule-c last:border-r-0">
-          <dt class="label">{f.k}</dt>
-          <dd class="serif text-2xl mt-2">{f.v}</dd>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 mt-24 sm:mt-32 border-t hairline pt-2 sm:pt-0">
+    {stats.map((s, i) => (
+      <div class={`py-10 sm:py-12 ${i > 0 ? 'border-t sm:border-t-0 sm:border-l hairline sm:pl-10' : ''}`}>
+        <div class="serif tnum leading-none text-[clamp(3.75rem,8vw,7rem)]">
+          {s.count ? <CountUp value={s.value} client:visible /> : String(s.value)}
         </div>
-      ))}
-    </dl>
-  </Reveal>
+        <p class="label mt-4">{s.label}</p>
+      </div>
+    ))}
+  </div>
 </section>

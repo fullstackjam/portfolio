@@ -3,20 +3,57 @@ import type { ProfileData } from '../../lib/types';
 import { POSITIONING } from '../../data/profile';
 import RevealText from '../RevealText.tsx';
 import MagneticLink from '../MagneticLink.tsx';
+import Parallax from '../Parallax.tsx';
 interface Props { profile: ProfileData; }
 const { profile } = Astro.props;
+
+// Split the headline at the first comma so the two halves can stagger and
+// indent independently; render the final word in sans as a deliberate
+// serif/sans collision. Falls back gracefully if the copy has no comma.
+const m = POSITIONING.headline.match(/^(.*?,)\s*(.*)$/);
+const line1 = m ? m[1] : POSITIONING.headline;
+const line2 = m ? m[2] : '';
+const l2words = line2.split(' ').filter(Boolean);
+const l2last = l2words.length > 1 ? l2words.pop()! : '';
+const l2rest = l2words.join(' ');
 ---
-<header class="min-h-[92vh] flex flex-col justify-center max-w-5xl mx-auto px-6 sm:px-10">
-  <div class="flex justify-between label border-b rule-c pb-3">
-    <span>{profile.name}</span><span>Portfolio — 2026</span>
+<header class="relative min-h-svh flex flex-col">
+  <div class="container-x pt-6">
+    <div class="flex items-baseline justify-between gap-4 border-b hairline pb-4 pr-16 sm:pr-20">
+      <span class="label">{profile.name}</span>
+      <span class="label hidden sm:block">{profile.location}</span>
+      <span class="label">Portfolio — 2026</span>
+    </div>
   </div>
-  <h1 class="serif mt-12 text-[clamp(2.75rem,8vw,6.5rem)] max-w-4xl">
-    <RevealText text={POSITIONING.headline} accent={POSITIONING.accent} client:load />
-  </h1>
-  <p class="font-sans mt-8 max-w-xl text-lg leading-relaxed muted">{POSITIONING.subline}</p>
-  <div class="mt-12">
-    <MagneticLink href="#work" client:visible className="serif text-2xl italic accent ul">
-      selected work ↓
-    </MagneticLink>
+
+  <div class="container-x flex-1 flex flex-col justify-center py-16">
+    <Parallax client:load amount={80}>
+      <p class="label mb-8 [color:var(--accent)]">Fullstack engineer</p>
+      <h1 class="display text-[clamp(2.75rem,11.5vw,11.5rem)]">
+        <span class="block">
+          <RevealText text={line1} client:load />
+        </span>
+        {line2 && (
+          <span class="block sm:pl-[9vw]">
+            {l2rest && <RevealText text={l2rest} accent={POSITIONING.accent} delay={0.15} client:load />}
+            {l2rest && ' '}
+            {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
+            {!l2rest && !l2last && <RevealText text={line2} accent={POSITIONING.accent} delay={0.15} client:load />}
+          </span>
+        )}
+      </h1>
+    </Parallax>
+  </div>
+
+  <div class="container-x pb-10">
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6 gap-y-8 items-end border-t hairline pt-8">
+      <p class="sm:col-span-5 max-w-md text-base sm:text-lg leading-relaxed muted">{POSITIONING.subline}</p>
+      <div class="sm:col-span-4 sm:col-start-7">
+        <MagneticLink href="#work" client:visible className="serif italic text-2xl accent ul">
+          selected work ↓
+        </MagneticLink>
+      </div>
+      <div class="sm:col-span-2 sm:col-start-11 sm:justify-self-end label tnum">{profile.followers} followers</div>
+    </div>
   </div>
 </header>

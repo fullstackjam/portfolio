@@ -1,25 +1,30 @@
 ---
-import { SOCIAL_LINKS } from '../../data/profile';
+import { SOCIAL_LINKS, OVERRIDES } from '../../data/profile';
 import RevealText from '../RevealText.tsx';
 import MagneticLink from '../MagneticLink.tsx';
 const email = SOCIAL_LINKS.find((l) => l.name === 'Email');
 const others = SOCIAL_LINKS.filter((l) => l.name !== 'Email');
 ---
-<section id="contact" class="max-w-5xl mx-auto px-6 sm:px-10 py-32 border-t rule-c">
-  <p class="label">05 — contact</p>
-  <h2 class="serif text-[clamp(2.5rem,8vw,6rem)] mt-6 max-w-3xl">
-    <RevealText text="Let's build something good together." accent="good" client:visible />
-  </h2>
-  {email && (
-    <div class="mt-10">
-      <MagneticLink href={email.url} client:visible className="serif italic text-3xl accent ul">
-        {email.url.replace('mailto:', '')}
-      </MagneticLink>
+<section id="contact" class="theatre">
+  <div class="container-x py-32 sm:py-44">
+    <p class="label">05 — Contact</p>
+    <h2 class="display text-[clamp(2.9rem,9.5vw,9.5rem)] mt-10 max-w-[18ch]">
+      <RevealText text="Let's build something good together." accent="good" client:visible />
+    </h2>
+    {email && (
+      <div class="mt-14 sm:mt-20">
+        <p class="label mb-5">{OVERRIDES.availableForWork ? 'Available for work — say hello' : 'Say hello'}</p>
+        <MagneticLink href={email.url} client:visible className="serif italic accent ul text-[clamp(1.375rem,4vw,3rem)]">
+          {email.url.replace('mailto:', '')}
+        </MagneticLink>
+      </div>
+    )}
+    <div class="mt-20 sm:mt-28 border-t hairline pt-8 flex flex-wrap gap-x-10 gap-y-4">
+      {others.map((l, i) => (
+        <a href={l.url} target="_blank" rel="noopener" class="label hover:[color:var(--accent)] transition-colors">
+          <span class="tnum mr-2">{String(i + 1).padStart(2, '0')}</span>{l.name} ↗
+        </a>
+      ))}
     </div>
-  )}
-  <div class="flex flex-wrap gap-x-8 gap-y-3 mt-12 label">
-    {others.map((l) => (
-      <a href={l.url} target="_blank" rel="noopener" class="hover:[color:var(--accent)] transition-colors">{l.name} ↗</a>
-    ))}
   </div>
 </section>

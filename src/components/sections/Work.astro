@@ -1,36 +1,51 @@
 ---
 import type { Repo } from '../../lib/types';
-import { PROJECT_BLURBS } from '../../data/profile';
 import RevealText from '../RevealText.tsx';
-import Reveal from '../Reveal.tsx';
 interface Props { repos: Repo[]; }
 const { repos } = Astro.props;
-const blurb = (r: Repo) => PROJECT_BLURBS[r.name] ?? r.description ?? '';
+const num = (i: number) => String(i + 1).padStart(2, '0');
+const meta = (r: Repo) => [r.language, r.stars ? `★ ${r.stars}` : null].filter(Boolean).join(' · ');
 ---
-<section id="work" class="max-w-5xl mx-auto px-6 sm:px-10 py-28 border-t rule-c">
-  <p class="label">02 — selected work</p>
-  <h2 class="serif text-[clamp(2rem,5vw,4rem)] mt-6 mb-12">
-    <RevealText text="Things I have built." accent="built." client:visible />
-  </h2>
+<section id="work" class="py-28 sm:py-40">
+  <div class="container-x">
+    <div class="flex items-baseline justify-between">
+      <p class="label">02 — Selected work</p>
+      <p class="label tnum hidden sm:block">{num(repos.length - 1)} projects</p>
+    </div>
+    <h2 class="serif text-[clamp(2.4rem,6vw,5.5rem)] mt-8 mb-14 sm:mb-20">
+      <RevealText text="Things I have built." accent="built." client:visible />
+    </h2>
+  </div>
+
   {repos.length > 0 ? (
-    <ul class="border-t rule-c">
+    <Fragment>
+    <div class="rule-x" data-grow></div>
+    <ul>
       {repos.map((r, i) => (
         <li>
-          <Reveal client:visible delay={i * 0.05}>
-            <a href={r.url} target="_blank" rel="noopener"
-               class="group grid grid-cols-[auto_1fr_auto] gap-6 items-baseline py-8 border-b rule-c transition-[padding] duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] hover:pl-4">
-              <span class="label">{String(i + 1).padStart(2, '0')}</span>
-              <div>
-                <h3 class="serif text-3xl group-hover:[color:var(--accent)] transition-colors">{r.name}</h3>
-                <p class="font-sans muted mt-2 max-w-xl">{blurb(r)}</p>
+          <a href={r.url} target="_blank" rel="noopener" class="work-row block">
+            <div class="container-x grid grid-cols-[1fr_auto] sm:grid-cols-[7rem_1fr_auto] gap-x-6 gap-y-2 items-start py-10 sm:py-14">
+              <span class="ghost-num serif tnum leading-[0.9] text-[clamp(2.75rem,6vw,5.5rem)] hidden sm:block" aria-hidden="true">{num(i)}</span>
+              <div class="min-w-0">
+                <span class="label tnum sm:hidden">{num(i)}</span>
+                <h3 class="work-title serif text-[clamp(2rem,5vw,4.25rem)] leading-[1.02] mt-2 sm:mt-0">{r.name}</h3>
+                {r.description && <p class="muted max-w-xl mt-3 text-sm sm:text-base leading-relaxed">{r.description}</p>}
+                {r.topics.length > 0 && (
+                  <p class="label mt-4 normal-case tracking-[0.14em]">{r.topics.join(' · ')}</p>
+                )}
               </div>
-              <span class="label whitespace-nowrap">{[r.language, r.stars ? `★ ${r.stars}` : null].filter(Boolean).join('  ·  ')}</span>
-            </a>
-          </Reveal>
+              <div class="flex flex-col items-end justify-between gap-4 self-stretch">
+                <span class="label tnum whitespace-nowrap">{meta(r)}</span>
+                <span class="work-arrow serif text-3xl accent" aria-hidden="true">↗</span>
+              </div>
+            </div>
+          </a>
+          <div class="rule-x" data-grow style={`transition-delay:${Math.min(i * 60, 240)}ms`}></div>
         </li>
       ))}
     </ul>
+    </Fragment>
   ) : (
-    <p class="font-sans muted">Projects are loading from GitHub — check back in a moment.</p>
+    <p class="container-x muted">Projects are loading from GitHub — check back in a moment.</p>
   )}
 </section>

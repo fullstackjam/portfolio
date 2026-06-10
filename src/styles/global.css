@@ -6,37 +6,68 @@
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
+/* ---------------------------------------------------------------------------
+   Design tokens — warm near-black / warm off-white, deep terracotta accent.
+   --surface is a quiet secondary tint for panels and hover states.
+--------------------------------------------------------------------------- */
 :root {
-  --bg: #f3efe7;
-  --fg: #1a1a1a;
-  --accent: #b3401f;
-  --muted: #6a6459;
-  --rule: #dcd6c8;
-  --hm-0: #e7e1d4;
-  --hm-1: #e7b9a3;
-  --hm-2: #d98e6e;
-  --hm-3: #c0613b;
-  --hm-4: #9a3d18;
+  --bg: #f7f4ef;
+  --surface: #efe9de;
+  --fg: #181512;
+  --accent: #a33a12;
+  --muted: #71695c;
+  --rule: #e1dacb;
+  --hm-0: #eae3d3;
+  --hm-1: #e6b69e;
+  --hm-2: #d68a66;
+  --hm-3: #bb5a32;
+  --hm-4: #93380f;
 }
 
 :root[data-theme='dark'] {
-  --bg: #14131a;
-  --fg: #ece9e2;
-  --accent: #e07a5f;
-  --muted: #8a8678;
-  --rule: #2a2832;
-  --hm-0: #24222c;
-  --hm-1: #5a3a30;
-  --hm-2: #8a5240;
-  --hm-3: #b56a4e;
-  --hm-4: #e07a5f;
+  --bg: #0f0e0d;
+  --surface: #161412;
+  --fg: #ede8df;
+  --accent: #f05e36;
+  --muted: #8b8275;
+  --rule: #272219;
+  --hm-0: #1c1916;
+  --hm-1: #58392b;
+  --hm-2: #8c4f33;
+  --hm-3: #c66a3c;
+  --hm-4: #f05e36;
 }
 
-html {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  :focus-visible {
+    outline: 1.5px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  /* Film-grain overlay — very low opacity, sits above everything, never interactive. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
 }
 
 html.lenis, html.lenis body { height: auto; }
@@ -49,14 +80,101 @@ html.lenis, html.lenis body { height: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
-.serif { font-family: var(--font-serif); font-weight: 400; line-height: 1.02; letter-spacing: -0.01em; }
-.accent { color: var(--accent); }
-.muted { color: var(--muted); }
-.rule-c { border-color: var(--rule); }
+@layer components {
+  /* Shared page gutter — wider than the old max-w-5xl, asymmetry happens inside it. */
+  .container-x {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) { .container-x { padding-inline: 2.5rem; } }
+  @media (min-width: 1024px) { .container-x { padding-inline: 3.5rem; } }
 
-.label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .serif {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+  }
 
-::selection { background: var(--accent); color: var(--bg); }
+  /* Display scale — hero / theatrical headlines. */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+  }
 
-.ul { background-image: linear-gradient(var(--accent), var(--accent)); background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 0.4s cubic-bezier(0.2,0.8,0.2,1); }
-.ul:hover { background-size: 100% 1px; }
+  .accent { color: var(--accent); }
+  .muted { color: var(--muted); }
+  .hairline, .rule-c { border-color: var(--rule); }
+
+  .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* 1px rule drawn as an element so it can animate in (see [data-grow]). */
+  .rule-x { height: 1px; width: 100%; background: var(--rule); }
+
+  /* Scroll-triggered growth for rules and bars. Default is fully drawn (no-JS,
+     reduced-motion); the Base script adds .js + .is-in to enable the animation. */
+  [data-grow] {
+    transform-origin: left center;
+    transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  :root.js [data-grow]:not(.is-in) { transform: scaleX(0); }
+  :root.js [data-grow].is-in { transform: scaleX(1); }
+
+  /* Work index numbers — outlined ghosts that ink in accent on row hover. */
+  .ghost-num {
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 30%, transparent);
+    transition: -webkit-text-stroke-color 0.45s ease;
+  }
+  .work-row:hover .ghost-num { -webkit-text-stroke-color: var(--accent); }
+
+  /* Work rows — full-bleed hover surface with a weighty lateral shift. */
+  .work-row { transition: background-color 0.5s ease; }
+  .work-row:hover { background-color: var(--surface); }
+  .work-title { transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.4s ease; }
+  .work-row:hover .work-title { transform: translateX(0.75rem); color: var(--accent); }
+  .work-arrow {
+    opacity: 0;
+    transform: translate(-0.4rem, 0.4rem);
+    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .work-row:hover .work-arrow { opacity: 1; transform: translate(0, 0); }
+
+  /* Contact — inverted theatrical panel. Locally re-binds the token set so
+     selection, rules, and underlines keep working inside it in both themes. */
+  .theatre {
+    --bg: #131010;
+    --surface: #1a1715;
+    --fg: #f4f0e9;
+    --accent: #f0603a;
+    --muted: #968d80;
+    --rule: #2b2620;
+    background: var(--bg);
+    color: var(--fg);
+    border-top: 1px solid var(--rule);
+  }
+
+  .avatar { filter: grayscale(1); transition: filter 0.5s ease; }
+  .avatar:hover { filter: none; }
+
+  .ul {
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .ul:hover { background-size: 100% 1px; }
+}

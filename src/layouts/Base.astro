@@ -29,5 +29,24 @@ const { title, description = 'Fullstack engineer — reliable systems, delightfu
     <SmoothScroll client:load />
     <ThemeToggle client:load />
     <slot />
+    <script>
+      // Scroll-triggered growth for [data-grow] rules/bars. The .js class gates
+      // the hidden initial state, so no-JS and reduced-motion get static rules.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js');
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '-8% 0px -8% 0px' }
+        );
+        document.querySelectorAll('[data-grow]').forEach((el) => io.observe(el));
+      }
+    </script>
   </body>
 </html>
