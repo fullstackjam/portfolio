@@ -18,35 +18,65 @@ const l2last = l2words.length > 1 ? l2words.pop()! : '';
 const l2rest = l2words.join(' ');
 ---
 <header class="relative min-h-svh flex flex-col">
+  <script is:inline>
+    // Pre-paint gate for the boot sequence: first visit (or ?boot) with motion
+    // allowed. Runs before the hero parses, so non-boot visitors never see a
+    // hidden state. The guard timer restores the static page if the boot
+    // script somehow never runs.
+    (function () {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var force = location.search.indexOf('boot') !== -1;
+        if (localStorage.getItem('boot:v1') && !force) return;
+        document.documentElement.classList.add('boot');
+        window.__bootGuard = setTimeout(function () {
+          document.documentElement.classList.remove('boot');
+        }, 3500);
+      } catch (e) {}
+    })();
+  </script>
+
   <div class="container-x pt-6">
-    <div class="flex items-baseline justify-between gap-4 border-b hairline pb-4 pr-16 sm:pr-20">
+    <div class="flex items-baseline justify-between gap-4 pb-4 pr-16 sm:pr-20">
       <span class="label">{profile.name}</span>
       <span class="label hidden sm:block">{profile.location}</span>
       <span class="label">Index — 2026</span>
     </div>
+    <div class="rule-x" data-boot-rule></div>
   </div>
 
   <div class="container-x flex-1 flex flex-col justify-center py-16">
     <Parallax client:load amount={80}>
-      <p class="label mb-8 [color:var(--accent)]">Fullstack engineer</p>
-      <h1 class="display text-[clamp(2.75rem,11.5vw,11.5rem)]">
-        <span class="block">
-          <RevealText text={line1} client:load />
-        </span>
-        {line2 && (
-          <span class="block sm:pl-[9vw]">
-            {l2rest && <RevealText text={l2rest} accent={POSITIONING.accent} delay={0.15} client:load />}
-            {l2rest && ' '}
-            {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
-            {!l2rest && !l2last && <RevealText text={line2} accent={POSITIONING.accent} delay={0.15} client:load />}
+      <div class="relative">
+        <div class="boot-seq" aria-hidden="true">
+          <div class="boot-line">$ <span class="boot-cmd"></span></div>
+          <div class="boot-line">layout/grid ········ <span class="boot-ok">ok</span></div>
+          <div class="boot-line">motion/lenis ······· <span class="boot-ok">ok</span></div>
+          <span class="caret boot-caret"></span>
+        </div>
+        <p class="label mb-8 [color:var(--accent)]" data-boot-eyebrow>Fullstack engineer</p>
+        <h1 class="display text-[clamp(2.75rem,11.5vw,11.5rem)]">
+          <span class="block">
+            <RevealText text={line1} client:load />
+            {!line2 && <span class="caret caret-dock caret-blink ml-[0.12ch]" aria-hidden="true"></span>}
           </span>
-        )}
-      </h1>
+          {line2 && (
+            <span class="block sm:pl-[9vw]">
+              {l2rest && <RevealText text={l2rest} accent={POSITIONING.accent} delay={0.15} client:load />}
+              {l2rest && ' '}
+              {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
+              {!l2rest && !l2last && <RevealText text={line2} accent={POSITIONING.accent} delay={0.15} client:load />}
+              <span class="caret caret-dock caret-blink ml-[0.12ch]" aria-hidden="true"></span>
+            </span>
+          )}
+        </h1>
+      </div>
     </Parallax>
   </div>
 
   <div class="container-x pb-10">
-    <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6 gap-y-8 items-end border-t hairline pt-8">
+    <div class="rule-x" data-boot-rule></div>
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6 gap-y-8 items-end pt-8" data-boot-meta>
       <p class="sm:col-span-5 max-w-md text-base sm:text-lg leading-relaxed muted">{POSITIONING.subline}</p>
       <div class="sm:col-span-4 sm:col-start-7">
         <MagneticLink href="#work" client:visible className="serif italic text-2xl accent ul">
@@ -57,3 +87,106 @@ const l2rest = l2words.join(' ');
     </div>
   </div>
 </header>
+
+<script>
+  import { animate } from 'motion';
+
+  const root = document.documentElement;
+  if (root.classList.contains('boot')) {
+    clearTimeout((window as { __bootGuard?: number }).__bootGuard);
+    try {
+      localStorage.setItem('boot:v1', '1');
+    } catch {}
+    boot().catch(() => root.classList.remove('boot'));
+  }
+
+  function wait(ms: number) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+
+  // The "reconcile" boot: mono spec lines print in the hero's whitespace and
+  // each `ok` settles one piece of the layout; the print block then collapses
+  // and the surviving caret docks after the headline's last word, for good.
+  // The headline itself is visible from the first frame throughout.
+  async function boot() {
+    const seq = document.querySelector<HTMLElement>('.boot-seq');
+    const caret = document.querySelector<HTMLElement>('.boot-caret');
+    const dock = document.querySelector<HTMLElement>('.caret-dock');
+    const lines = Array.from(document.querySelectorAll<HTMLElement>('.boot-line'));
+    if (!seq || !caret || !dock || lines.length === 0) {
+      root.classList.remove('boot');
+      return;
+    }
+
+    const ease: [number, number, number, number] = [0.2, 0.8, 0.2, 1];
+    // Output-line confirmations: rules + eyebrow, then the meta row.
+    const confirm: Array<() => void> = [
+      () => {
+        document.querySelectorAll<HTMLElement>('[data-boot-rule]').forEach((el) => {
+          animate(el, { scaleX: [0, 1] }, { duration: 0.8, ease });
+        });
+        const el = document.querySelector<HTMLElement>('[data-boot-eyebrow]');
+        if (el) el.style.color = 'var(--accent)';
+      },
+      () => {
+        const el = document.querySelector<HTMLElement>('[data-boot-meta]');
+        if (el) animate(el, { opacity: [0, 1], y: [8, 0] }, { duration: 0.45, ease });
+      },
+    ];
+
+    const moveCaret = (line: HTMLElement, gap: number) => {
+      caret.style.left = `${Math.ceil(line.getBoundingClientRect().width) + gap}px`;
+      caret.style.top = `${line.offsetTop}px`;
+    };
+
+    // Opening beat: the caret sits at the prompt, then gives one deliberate
+    // wink. (A CSS blink can't be trusted here — its phase depends on load.)
+    await wait(250);
+    caret.style.opacity = '0';
+    await wait(130);
+    caret.style.opacity = '1';
+    await wait(150);
+
+    // A human types the command; the output is the machine's and bursts.
+    const cmd = lines[0].querySelector<HTMLElement>('.boot-cmd');
+    const text = 'reconcile hero.yaml';
+    for (let i = 1; i <= text.length; i++) {
+      if (cmd) cmd.textContent = text.slice(0, i);
+      moveCaret(lines[0], 2);
+      await wait(28 + Math.random() * 34);
+    }
+    await wait(180); // Enter
+
+    const gaps = [0, 300]; // output bursts, one deliberate stutter
+    for (let i = 1; i < lines.length; i++) {
+      await wait(gaps[i - 1] ?? 70);
+      lines[i].style.visibility = 'visible';
+      moveCaret(lines[i], 7);
+      confirm[i - 1]?.();
+    }
+
+    await wait(600); // let the oks land
+    // Collapse: hard cuts, bottom-up — no fades.
+    for (let i = lines.length - 1; i >= 0; i--) {
+      lines[i].style.visibility = 'hidden';
+      await wait(45);
+    }
+
+    // Flight: spring the caret into its permanent dock in the headline.
+    const from = caret.getBoundingClientRect();
+    const to = dock.getBoundingClientRect();
+    caret.style.transformOrigin = 'top left';
+    await animate(
+      caret,
+      {
+        x: to.left - from.left,
+        y: to.top - from.top,
+        scaleX: to.width / from.width,
+        scaleY: to.height / from.height,
+      },
+      { duration: 0.26, ease: [0.3, 0.9, 0.2, 1] }
+    ).finished;
+    root.classList.remove('boot');
+    seq.style.display = 'none';
+  }
+</script>

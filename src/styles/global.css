@@ -178,3 +178,59 @@ html.lenis, html.lenis body { height: auto; }
   }
   .ul:hover { background-size: 100% 1px; }
 }
+
+/* ---------------------------------------------------------------------------
+   Boot — the first-visit "reconcile" moment in the hero. An inline script in
+   Hero sets :root.boot BEFORE first paint (first visit, motion allowed), so
+   everyone else gets today's fully-formed static render and the headline is
+   never suppressed. The Hero module script runs the timeline and removes the
+   class; an inline guard timer lifts the gates if that script never runs.
+--------------------------------------------------------------------------- */
+.caret {
+  display: inline-block;
+  width: 0.5ch;
+  height: 0.72em;
+  background: currentColor;
+}
+.caret-blink { animation: caret-blink 1.1s infinite; }
+@keyframes caret-blink {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The global 0.01ms rule above would turn the blink into a flicker — pin it off. */
+  .caret-blink { animation: none !important; }
+}
+
+/* Sized to fit the hero's guaranteed py-16 band above the centered content,
+   so it can never collide with the top bar even at zero flex slack. */
+.boot-seq {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 0.75rem);
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.55;
+  user-select: none;
+  pointer-events: none;
+}
+.boot-line { color: var(--muted); visibility: hidden; white-space: pre; width: max-content; }
+/* The prompt line is visible from first paint — a terminal at rest. */
+:root.boot .boot-line:first-child { visibility: visible; }
+.boot-line .boot-cmd { color: var(--fg); }
+.boot-line .boot-ok { color: var(--accent); }
+.boot-caret {
+  position: absolute;
+  top: 0;
+  left: calc(2ch + 2px); /* at rest, right after the "$ " prompt */
+  margin-top: 0.25em;
+  width: 0.55em;
+  height: 1.05em;
+}
+
+:root.boot .boot-seq { display: block; }
+:root.boot [data-boot-rule] { transform: scaleX(0); transform-origin: left center; }
+:root.boot [data-boot-eyebrow] { color: var(--muted); transition: color 0.35s ease; }
+:root.boot [data-boot-meta] { opacity: 0; }
+:root.boot .caret-dock { visibility: hidden; }
