@@ -1,6 +1,6 @@
 import type { Repo, LangStat, GitHubData, ProfileData, ContributionDay } from './types';
 import { cached } from './cache';
-import { GITHUB_USER, OVERRIDES, FEATURED_REPOS } from '../data/profile';
+import { GITHUB_USER, OVERRIDES } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
@@ -144,8 +144,6 @@ async function fetchAll(token?: string): Promise<GitHubData> {
     totalStars: sumStars(rawRepos),
   };
 
-  const nonFork: Repo[] = rawRepos.filter((r) => !r.fork).map(mapRepo);
-  const repos: Repo[] = selectFeaturedRepos(nonFork, FEATURED_REPOS, 6);
   const languages: LangStat[] = aggregateLanguages(rawRepos);
 
   let contributions: ContributionDay[] = [];
@@ -160,7 +158,7 @@ async function fetchAll(token?: string): Promise<GitHubData> {
     }
   }
 
-  return { profile, repos, languages, contributions, totalContributions };
+  return { profile, repos: [], languages, contributions, totalContributions };
 }
 
 /** Orchestrator: cached live data, snapshot fallback so the site is never empty. */

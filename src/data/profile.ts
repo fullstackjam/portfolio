@@ -1,3 +1,5 @@
+import type { Repo } from '../lib/types';
+
 export const GITHUB_USER = 'fullstackjam';
 
 /** Optional overrides. Leave bio '' to use the live GitHub bio. */
@@ -18,22 +20,59 @@ export const POSITIONING = {
 export const ABOUT =
   "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a fully GitOps-managed cluster, progressive delivery, and a development environment I can reproduce from a single clone. I care about systems that stay up, and interfaces that feel good to use.";
 
-/** Curated order for the Selected Work section; the rest fill in by stars. */
-export const FEATURED_REPOS = [
-  'k8s-gitops',
-  'lark-coding-agent-bridge',
-  'dotfiles',
-  'blog',
-  'portfolio',
+/** Projects shown in the Selected Work section — fully curated, not from GitHub API. */
+export const PROJECTS: Repo[] = [
+  {
+    name: 'k8s-gitops',
+    description: 'A fully version-controlled Kubernetes cluster — infrastructure as code, reconciled by GitOps.',
+    language: 'Go',
+    stars: 0,
+    forks: 0,
+    topics: ['kubernetes', 'gitops', 'fluxcd'],
+    homepage: null,
+    url: 'https://github.com/fullstackjam/k8s-gitops',
+  },
+  {
+    name: 'lark-coding-agent-bridge',
+    description: 'Bridge between Lark (Feishu) and AI coding agents — routes messages, manages context, streams responses.',
+    language: 'TypeScript',
+    stars: 0,
+    forks: 0,
+    topics: ['ai', 'lark', 'agent'],
+    homepage: null,
+    url: 'https://github.com/fullstackjam/lark-coding-agent-bridge',
+  },
+  {
+    name: 'dotfiles',
+    description: 'My entire development environment, reproducible from a single clone.',
+    language: 'Shell',
+    stars: 0,
+    forks: 0,
+    topics: ['dotfiles', 'neovim', 'zsh'],
+    homepage: null,
+    url: 'https://github.com/fullstackjam/dotfiles',
+  },
+  {
+    name: 'blog',
+    description: 'Notes and writing, built and hosted on my own stack.',
+    language: 'TypeScript',
+    stars: 0,
+    forks: 0,
+    topics: ['astro', 'blog'],
+    homepage: null,
+    url: 'https://github.com/fullstackjam/blog',
+  },
+  {
+    name: 'portfolio',
+    description: 'This site — Astro on Cloudflare Workers, rendered live from GitHub.',
+    language: 'TypeScript',
+    stars: 0,
+    forks: 0,
+    topics: ['astro', 'cloudflare'],
+    homepage: null,
+    url: 'https://github.com/fullstackjam/portfolio',
+  },
 ];
-
-/** One-line "what it solves" per repo. Repos without an entry fall back to their GitHub description. */
-export const PROJECT_BLURBS: Record<string, string> = {
-  'k8s-gitops': 'A fully version-controlled Kubernetes cluster — infrastructure as code, reconciled by GitOps.',
-  dotfiles: 'My entire development environment, reproducible from a single clone.',
-  blog: 'Notes and writing, built and hosted on my own stack.',
-  portfolio: 'This site — Astro on Cloudflare Workers, rendered live from GitHub.',
-};
 
 export const SOCIAL_LINKS = [
   { name: 'GitHub', url: 'https://github.com/fullstackjam' },

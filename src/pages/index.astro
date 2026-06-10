@@ -10,6 +10,7 @@ import Footer from '../components/Footer.astro';
 import { getGitHubData } from '../lib/github';
 import snapshot from '../data/github-snapshot.json';
 import type { GitHubData } from '../lib/types';
+import { PROJECTS } from '../data/profile';
 
 let data: GitHubData;
 try {
@@ -25,7 +26,7 @@ const topLanguages = data.languages.map((l) => l.name);
 <Base title="fullstackjam — reliable systems, delightful interfaces">
   <Hero profile={data.profile} />
   <About profile={data.profile} sinceYear={sinceYear} topLanguages={topLanguages} />
-  <Work repos={data.repos} />
+  <Work repos={PROJECTS} />
   <Stack languages={data.languages} />
   <Activity contributions={data.contributions} total={data.totalContributions} />
   <Contact />
