@@ -26,7 +26,7 @@ export const PROJECTS: Project[] = [
   {
     name: 'openboot',
     url: 'https://github.com/openbootdotdev/openboot',
-    year: '2024 → now',
+    year: '2026 → now',
     language: 'Go',
     topics: ['CLI', 'TUI', 'macOS'],
     story:
@@ -35,7 +35,7 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: '"Reproducible" is harder, and more valuable, than "works."',
     },
-    footnote: { prompt: '$', cmd: 'openboot init', note: 'empty machine to coding in ~1 command' },
+    footnote: { prompt: '$', cmd: 'curl -fsSL openboot.dev/install.sh | bash', note: 'a fresh Mac, set up in one line' },
     hasDashboard: true,
   },
   {
@@ -43,19 +43,19 @@ export const PROJECTS: Project[] = [
     url: 'https://github.com/fullstackjam/k8s-gitops',
     year: '2022 → now',
     language: 'Go',
-    topics: ['Kubernetes', 'GitOps', 'FluxCD'],
+    topics: ['Kubernetes', 'GitOps', 'ArgoCD'],
     story:
       'I wanted a cluster I could rebuild from zero, so all the infrastructure is code, reconciled by GitOps: git is the source of truth and nobody runs kubectl apply by hand.',
     reflection: {
       label: 'what it taught me',
       text: 'When "rebuild" becomes a non-event, you dare to change boldly.',
     },
-    footnote: { prompt: '$', cmd: 'flux reconcile', note: 'delete the cluster, it comes back in ~10 min' },
+    footnote: { prompt: '$', cmd: 'argocd app sync', note: 'git is the source of truth; the cluster follows' },
   },
   {
     name: 'lark-coding-agent-bridge',
     url: 'https://github.com/fullstackjam/lark-coding-agent-bridge',
-    year: '2025',
+    year: '2026',
     language: 'TypeScript',
     topics: ['AI', 'Lark', 'agent'],
     story:
@@ -68,17 +68,17 @@ export const PROJECTS: Project[] = [
   },
   {
     name: 'blog',
-    url: 'https://github.com/fullstackjam/blog',
-    year: 'ongoing',
-    language: 'TypeScript',
-    topics: ['Astro', 'writing'],
+    url: 'https://blog.fullstackjam.com',
+    year: '2022 → now',
+    language: 'Hugo',
+    topics: ['self-hosted', 'writing'],
     story:
-      'Notes and writing, built and hosted on my own stack — because owning the publishing pipeline is worth it.',
+      'Notes and writing on the things I build — GitOps, homelab, dev environments, AI workflows — built and hosted on my own stack, because owning the publishing pipeline is worth it.',
     reflection: {
-      label: 'why it exists',
-      text: 'Some things you build just to keep the craft sharp.',
+      label: 'why I write',
+      text: 'Writing it down is how I find out whether I actually understand it.',
     },
-    footnote: null,
+    footnote: { prompt: '→', cmd: 'blog.fullstackjam.com', note: 'notes & writing, since 2022' },
   },
 ];
 

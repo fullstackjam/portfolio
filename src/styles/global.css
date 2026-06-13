@@ -136,8 +136,7 @@ html.lenis, html.lenis body { height: auto; }
     border-top: 1px solid var(--rule);
   }
 
-  .avatar { filter: grayscale(1); transition: filter 0.5s ease; }
-  .avatar:hover { filter: none; }
+  .avatar { filter: none; }
 
   .ul {
     background-image: linear-gradient(var(--accent), var(--accent));
