@@ -12,6 +12,7 @@ describe('PROJECTS narrative shape', () => {
       expect(Array.isArray(p.topics)).toBe(true);
       expect(p.story.length).toBeGreaterThan(20);
       expect(typeof p.reflection.label).toBe('string');
+      expect(p.reflection.label.length).toBeGreaterThan(0);
       expect(p.reflection.text.length).toBeGreaterThan(0);
       if (p.footnote !== null) {
         expect(typeof p.footnote.prompt).toBe('string');

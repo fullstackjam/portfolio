@@ -2,9 +2,9 @@
 import type { Project } from '../../lib/types';
 import RevealText from '../RevealText.tsx';
 import CaseCard from '../CaseCard.astro';
-interface Props { repos: Project[]; }
-const { repos } = Astro.props;
-const count = String(repos.length).padStart(2, '0');
+interface Props { projects: Project[]; }
+const { projects } = Astro.props;
+const count = String(projects.length).padStart(2, '0');
 ---
 <section id="work" class="py-28 sm:py-40">
   <div class="container-x">
@@ -17,8 +17,8 @@ const count = String(repos.length).padStart(2, '0');
     </h2>
   </div>
 
-  {repos.length > 0 ? (
-    repos.map((project, i) => <CaseCard project={project} index={i} />)
+  {projects.length > 0 ? (
+    projects.map((project, i) => <CaseCard project={project} index={i} />)
   ) : (
     <p class="container-x muted">Projects are loading — check back in a moment.</p>
   )}

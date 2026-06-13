@@ -6,9 +6,9 @@ const { project, index } = Astro.props;
 const num = String(index + 1).padStart(2, '0');
 const tags = [project.language, ...project.topics];
 ---
-<a href={project.url} target="_blank" rel="noopener" class="case-row block">
+<a href={project.url} target="_blank" rel="noopener noreferrer" class="case-row block">
   <div class="container-x case-grid">
-    <div class="case-num tnum" aria-hidden="true"><span class="zero">{num[0]}</span>{num[1]}</div>
+    <div class="case-num tnum" aria-hidden="true"><span class="lead">{num[0]}</span>{num[1]}</div>
     <div class="min-w-0">
       <div class="flex items-baseline gap-4 flex-wrap mb-5">
         <h3 class="case-title">{project.name}</h3>
@@ -30,7 +30,7 @@ const tags = [project.language, ...project.topics];
         <span class="flex gap-2 flex-wrap">
           {tags.map((t) => <span class="label tag normal-case tracking-[0.1em]">{t}</span>)}
         </span>
-        <span class="view label">view <span class="arrow accent">↗</span></span>
+        <span class="view label">view <span class="arrow accent" aria-hidden="true">↗</span></span>
       </div>
     </div>
   </div>

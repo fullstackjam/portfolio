@@ -215,9 +215,9 @@ html.lenis, html.lenis body { height: auto; }
     align-self: start;
     transition: color 0.35s ease;
   }
-  .case-num .zero { color: var(--accent); transition: color 0.35s ease; }
+  .case-num .lead { color: var(--accent); transition: color 0.35s ease; }
   .case-row:hover .case-num { color: var(--accent); }
-  .case-row:hover .case-num .zero { color: var(--fg); }
+  .case-row:hover .case-num .lead { color: var(--fg); }
   .case-title {
     font-family: var(--font-serif);
     color: var(--fg);
