@@ -37,7 +37,6 @@ export function aggregateLanguages(repos: { language: string | null }[]): LangSt
     .sort((a, b) => b.pct - a.pct);
 }
 
-
 const API = 'https://api.github.com';
 
 function headers(token?: string): Record<string, string> {
