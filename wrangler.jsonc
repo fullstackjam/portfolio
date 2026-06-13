@@ -6,7 +6,7 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": { "directory": "./dist", "binding": "ASSETS" },
   "kv_namespaces": [
-    { "binding": "GITHUB_CACHE", "id": "7c66475ef72e47c581974dc5d219c348" }
+    { "binding": "GITHUB_CACHE", "id": "a26d6bce7b234f62b811a7f12efd1fad" }
   ],
   "routes": [
     { "pattern": "fullstackjam.com", "custom_domain": true }
