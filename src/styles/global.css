@@ -222,6 +222,24 @@ html.lenis, html.lenis body { height: auto; }
   }
   .footnote .prompt { color: var(--accent); flex: none; }
   .footnote .note { color: var(--muted); }
+  /* interactive footnote: copy-button or link. Reset native button chrome,
+     add a quiet hover affordance and a trailing action token. */
+  button.footnote { cursor: pointer; appearance: none; -webkit-appearance: none; text-align: left; }
+  a.footnote { cursor: pointer; }
+  a.footnote, button.footnote { transition: border-color 0.25s ease; }
+  a.footnote:hover, button.footnote:hover { border-color: var(--accent); }
+  .footnote .fn-body { min-width: 0; }
+  .footnote .fn-action {
+    flex: none;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    transition: color 0.2s ease;
+  }
+  a.footnote:hover .fn-action, button.footnote:hover .fn-action { color: var(--accent); }
+  .footnote.is-copied .fn-action { color: var(--accent); }
+  /* title is a link now, but keep the serif title's own color/hover behavior */
+  .case-title-link { color: inherit; }
   .view {
     font-family: var(--font-mono);
     position: relative;

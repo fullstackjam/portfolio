@@ -1,17 +1,23 @@
 ---
 import type { Project } from '../lib/types';
 import OpenbootDashboard from './OpenbootDashboard.astro';
+import CaseFootnote from './CaseFootnote.tsx';
 interface Props { project: Project; index: number; }
 const { project, index } = Astro.props;
 const num = String(index + 1).padStart(2, '0');
 const tags = [project.language, ...project.topics];
+// The card is no longer a single link, so the footnote can carry its own
+// interaction (copy a command / open a commit or site). Title + "view ↗"
+// remain the links into the project.
 ---
-<a href={project.url} target="_blank" rel="noopener noreferrer" class="case-row block" aria-label={`${project.name} — view project`}>
+<article class="case-row">
   <div class="container-x case-grid">
     <div class="case-num tnum" aria-hidden="true"><span class="lead">{num[0]}</span>{num[1]}</div>
     <div class="min-w-0">
       <div class="flex items-baseline gap-4 flex-wrap mb-5">
-        <h3 class="case-title">{project.name}</h3>
+        <a href={project.url} target="_blank" rel="noopener noreferrer" class="case-title-link">
+          <h3 class="case-title">{project.name}</h3>
+        </a>
         <span class="label tnum">{project.year}</span>
       </div>
       <p class="case-story mb-6">{project.story}</p>
@@ -20,9 +26,14 @@ const tags = [project.language, ...project.topics];
         <p>{project.reflection.text}</p>
       </div>
       {project.footnote && (
-        <div class="footnote mb-7">
-          <span class="prompt">{project.footnote.prompt}</span>
-          <span><span class="cmd">{project.footnote.cmd}</span>{project.footnote.note && <span class="note"> — {project.footnote.note}</span>}</span>
+        <div class="mb-7">
+          <CaseFootnote
+            prompt={project.footnote.prompt}
+            cmd={project.footnote.cmd}
+            note={project.footnote.note}
+            action={project.footnote.action}
+            client:visible
+          />
         </div>
       )}
       {project.hasDashboard && <OpenbootDashboard />}
@@ -30,8 +41,10 @@ const tags = [project.language, ...project.topics];
         <span class="flex gap-2 flex-wrap">
           {tags.map((t) => <span class="label tag normal-case tracking-[0.1em]">{t}</span>)}
         </span>
-        <span class="view label">view <span class="arrow accent" aria-hidden="true">↗</span></span>
+        <a href={project.url} target="_blank" rel="noopener noreferrer" class="view label">
+          view <span class="arrow accent" aria-hidden="true">↗</span>
+        </a>
       </div>
     </div>
   </div>
-</a>
+</article>

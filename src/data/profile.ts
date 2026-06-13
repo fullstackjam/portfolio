@@ -35,7 +35,7 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: '"Reproducible" is harder, and more valuable, than "works."',
     },
-    footnote: { prompt: '$', cmd: 'curl -fsSL openboot.dev/install.sh | bash', note: 'a fresh Mac, set up in one line' },
+    footnote: { prompt: '$', cmd: 'curl -fsSL openboot.dev/install.sh | bash', note: 'a fresh Mac, set up in one line', action: { kind: 'copy' } },
     hasDashboard: true,
   },
   {
@@ -50,7 +50,7 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: 'When "rebuild" becomes a non-event, you dare to change boldly.',
     },
-    footnote: { prompt: '$', cmd: 'argocd app sync', note: 'git is the source of truth; the cluster follows' },
+    footnote: { prompt: '$', cmd: 'argocd app sync', note: 'git is the source of truth; the cluster follows', action: { kind: 'copy' } },
   },
   {
     name: 'lark-coding-agent-bridge',
@@ -64,7 +64,7 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: 'An elegant interface is usually just catching someone else\'s mess.',
     },
-    footnote: { prompt: 'commit', cmd: 'streaming over Lark long-connection' },
+    footnote: { prompt: 'commit', cmd: 'streaming over Lark long-connection', action: { kind: 'link', href: 'https://github.com/fullstackjam/lark-coding-agent-bridge/commits' } },
   },
   {
     name: 'blog',
@@ -78,7 +78,7 @@ export const PROJECTS: Project[] = [
       label: 'why I write',
       text: 'Writing it down is how I find out whether I actually understand it.',
     },
-    footnote: { prompt: '→', cmd: 'blog.fullstackjam.com', note: 'notes & writing, since 2022' },
+    footnote: { prompt: '→', cmd: 'blog.fullstackjam.com', note: 'notes & writing, since 2022', action: { kind: 'link', href: 'https://blog.fullstackjam.com' } },
   },
 ];
 

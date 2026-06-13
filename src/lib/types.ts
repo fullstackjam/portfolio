@@ -21,11 +21,15 @@ export interface Reflection {
   text: string;
 }
 
+/** What clicking the footnote does: copy the command, or open a link. */
+export type FootnoteAction = { kind: 'copy' } | { kind: 'link'; href: string };
+
 export interface Footnote {
   /** terracotta prefix token, e.g. "$" or "commit" */
   prompt: string;
   cmd: string;
   note?: string;
+  action: FootnoteAction;
 }
 
 export interface Project {
