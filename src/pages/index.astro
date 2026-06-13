@@ -4,7 +4,6 @@ import Hero from '../components/sections/Hero.astro';
 import About from '../components/sections/About.astro';
 import Work from '../components/sections/Work.astro';
 import Stack from '../components/sections/Stack.astro';
-import Activity from '../components/sections/Activity.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { getGitHubData } from '../lib/github';
@@ -28,7 +27,6 @@ const topLanguages = data.languages.map((l) => l.name);
   <About profile={data.profile} sinceYear={sinceYear} topLanguages={topLanguages} />
   <Work repos={PROJECTS} />
   <Stack languages={data.languages} />
-  <Activity contributions={data.contributions} total={data.totalContributions} />
   <Contact />
   <Footer />
 </Base>

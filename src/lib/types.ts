@@ -24,16 +24,8 @@ export interface ProfileData {
   totalStars: number;
 }
 
-export interface ContributionDay {
-  date: string;
-  count: number;
-  level: 0 | 1 | 2 | 3 | 4;
-}
-
 export interface GitHubData {
   profile: ProfileData;
   repos: Repo[];
   languages: LangStat[];
-  contributions: ContributionDay[];
-  totalContributions: number;
 }
