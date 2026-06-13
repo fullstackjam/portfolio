@@ -95,7 +95,7 @@ async function fetchAll(token?: string): Promise<GitHubData> {
 /** Orchestrator: cached live data, snapshot fallback so the site is never empty. */
 export async function getGitHubData(env: { GITHUB_CACHE: KVNamespace; GITHUB_TOKEN?: string }): Promise<GitHubData> {
   try {
-    return await cached(env.GITHUB_CACHE, `gh:${GITHUB_USER}`, 3600, () => fetchAll(env.GITHUB_TOKEN));
+    return await cached(env.GITHUB_CACHE, `gh:${GITHUB_USER}`, 900, () => fetchAll(env.GITHUB_TOKEN));
   } catch {
     return snapshot as GitHubData;
   }
