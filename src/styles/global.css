@@ -241,7 +241,7 @@ html.lenis, html.lenis body { height: auto; }
   }
   .case-row:hover .view::after { transform: scaleX(1); }
   .case-row:hover .view .arrow { transform: translate(3px, -3px); }
-  .tag:not(:last-child)::after { content: "·"; color: var(--rule); padding-left: 8px; }
+  .tag:not(:last-child)::after { content: "·"; color: var(--muted); padding-left: 8px; }
 
   /* ---- openboot CSS/ASCII dashboard — the one dark object (dark in both themes) ---- */
   .dash {

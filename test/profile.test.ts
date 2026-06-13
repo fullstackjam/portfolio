@@ -10,6 +10,7 @@ describe('PROJECTS narrative shape', () => {
       expect(typeof p.year).toBe('string');
       expect(typeof p.language).toBe('string');
       expect(Array.isArray(p.topics)).toBe(true);
+      expect(p.topics.length).toBeGreaterThan(0);
       expect(p.story.length).toBeGreaterThan(20);
       expect(typeof p.reflection.label).toBe('string');
       expect(p.reflection.label.length).toBeGreaterThan(0);
