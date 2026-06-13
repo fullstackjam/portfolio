@@ -38,9 +38,8 @@ const l2rest = l2words.join(' ');
 
   <div class="container-x pt-6">
     <div class="flex items-baseline justify-between gap-4 pb-4 pr-16 sm:pr-20">
-      <span class="label">{profile.name}</span>
-      <span class="label hidden sm:block">{profile.location}</span>
-      <span class="label">Index — 2026</span>
+      <span class="label"><span class="[color:var(--accent)]">✦</span>&nbsp; {profile.name} — selected work</span>
+      <span class="label tnum hidden sm:block">{profile.location} · Index 2026</span>
     </div>
     <div class="rule-x" data-boot-rule></div>
   </div>
@@ -55,13 +54,13 @@ const l2rest = l2words.join(' ');
           <span class="caret boot-caret"></span>
         </div>
         <p class="label mb-8 [color:var(--accent)]" data-boot-eyebrow>Fullstack engineer</p>
-        <h1 class="display text-[clamp(2.75rem,11.5vw,11.5rem)]">
+        <h1 class="hero-headline display text-[clamp(2.5rem,7vw,6.25rem)]">
           <span class="block">
             <RevealText text={line1} client:load />
             {!line2 && <span class="caret caret-dock caret-blink ml-[0.12ch]" aria-hidden="true"></span>}
           </span>
           {line2 && (
-            <span class="block sm:pl-[9vw]">
+            <span class="block">
               {l2rest && <RevealText text={l2rest} accent={POSITIONING.accent} delay={0.15} client:load />}
               {l2rest && ' '}
               {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
@@ -77,13 +76,12 @@ const l2rest = l2words.join(' ');
   <div class="container-x pb-10">
     <div class="rule-x" data-boot-rule></div>
     <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6 gap-y-8 items-end pt-8" data-boot-meta>
-      <p class="sm:col-span-5 max-w-md text-base sm:text-lg leading-relaxed muted">{POSITIONING.subline}</p>
-      <div class="sm:col-span-4 sm:col-start-7">
+      <p class="sm:col-span-6 max-w-md text-base sm:text-lg leading-relaxed muted">{POSITIONING.subline}</p>
+      <div class="sm:col-span-4 sm:col-start-9 sm:justify-self-end">
         <MagneticLink href="#work" client:visible className="serif italic text-2xl accent ul">
           selected work ↓
         </MagneticLink>
       </div>
-      <div class="sm:col-span-2 sm:col-start-11 sm:justify-self-end label tnum">{profile.followers} followers</div>
     </div>
   </div>
 </header>
