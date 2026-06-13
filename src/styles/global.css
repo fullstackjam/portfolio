@@ -3,7 +3,7 @@
 @theme {
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 /* ---------------------------------------------------------------------------
@@ -17,11 +17,6 @@
   --accent: #a33a12;
   --muted: #71695c;
   --rule: #e1dacb;
-  --hm-0: #eae3d3;
-  --hm-1: #e6b69e;
-  --hm-2: #d68a66;
-  --hm-3: #bb5a32;
-  --hm-4: #93380f;
 }
 
 :root[data-theme='dark'] {
@@ -31,11 +26,6 @@
   --accent: #f05e36;
   --muted: #8b8275;
   --rule: #272219;
-  --hm-0: #1c1916;
-  --hm-1: #58392b;
-  --hm-2: #8c4f33;
-  --hm-3: #c66a3c;
-  --hm-4: #f05e36;
 }
 
 @layer base {
@@ -132,26 +122,6 @@ html.lenis, html.lenis body { height: auto; }
   :root.js [data-grow]:not(.is-in) { transform: scaleX(0); }
   :root.js [data-grow].is-in { transform: scaleX(1); }
 
-  /* Work index numbers — outlined ghosts that ink in accent on row hover. */
-  .ghost-num {
-    color: transparent;
-    -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 30%, transparent);
-    transition: -webkit-text-stroke-color 0.45s ease;
-  }
-  .work-row:hover .ghost-num { -webkit-text-stroke-color: var(--accent); }
-
-  /* Work rows — full-bleed hover surface with a weighty lateral shift. */
-  .work-row { transition: background-color 0.5s ease; }
-  .work-row:hover { background-color: var(--surface); }
-  .work-title { transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.4s ease; }
-  .work-row:hover .work-title { transform: translateX(0.75rem); color: var(--accent); }
-  .work-arrow {
-    opacity: 0;
-    transform: translate(-0.4rem, 0.4rem);
-    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .work-row:hover .work-arrow { opacity: 1; transform: translate(0, 0); }
-
   /* Contact — inverted theatrical panel. Locally re-binds the token set so
      selection, rules, and underlines keep working inside it in both themes. */
   .theatre {
@@ -177,6 +147,127 @@ html.lenis, html.lenis body { height: auto; }
     transition: background-size 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
   .ul:hover { background-size: 100% 1px; }
+
+  /* ---- Hero headline: keep each comma-line intact; proof-underline the accent ---- */
+  .hero-headline .block { white-space: nowrap; }
+  @media (max-width: 560px) { .hero-headline .block { white-space: normal; } }
+  /* underline drawn as a background on the word itself, so RevealText's
+     overflow:hidden mask never clips it and it never strikes the next word */
+  .hero-headline .accent {
+    background-image: linear-gradient(
+      color-mix(in srgb, var(--accent) 38%, transparent),
+      color-mix(in srgb, var(--accent) 38%, transparent));
+    background-size: 100% 0.07em;
+    background-position: 0 95%;
+    background-repeat: no-repeat;
+  }
+
+  /* ---- Selected Work — editorial ledger ----
+     .case-row = structure + hover scope (no `display`, so the anchor's Tailwind
+     `block` utility is free to apply); .case-grid = the two columns. */
+  .case-row {
+    padding: clamp(40px, 6vh, 72px) 0;
+    border-top: 1px solid var(--rule);
+  }
+  .case-row:first-of-type { border-top: none; }
+  .case-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.32fr);
+    gap: clamp(24px, 4.5vw, 76px);
+  }
+  .case-num {
+    font-family: var(--font-serif);
+    font-size: clamp(96px, 15vw, 230px);
+    line-height: 0.78;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    user-select: none;
+    align-self: start;
+    transition: color 0.35s ease;
+  }
+  .case-num .lead { color: var(--accent); transition: color 0.35s ease; }
+  .case-row:hover .case-num { color: var(--accent); }
+  .case-row:hover .case-num .lead { color: var(--fg); }
+  .case-title {
+    font-family: var(--font-serif);
+    color: var(--fg);
+    font-size: clamp(2rem, 4.6vw, 3.6rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition: color 0.35s ease;
+  }
+  .case-row:hover .case-title { color: var(--accent); }
+  .case-story { max-width: 52ch; line-height: 1.66; color: var(--fg); }
+  .reflection { max-width: 50ch; border-left: 2px solid var(--accent); padding-left: 22px; }
+  .reflection p {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+    line-height: 1.32;
+    color: var(--fg);
+    margin: 0;
+  }
+  .footnote {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 9px 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fg);
+    max-width: 100%;
+  }
+  .footnote .prompt { color: var(--accent); flex: none; }
+  .footnote .note { color: var(--muted); }
+  .view {
+    font-family: var(--font-mono);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+  .view .arrow { color: var(--accent); display: inline-block; transition: transform 0.3s ease; }
+  .view::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: -4px;
+    height: 1px; background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+  .case-row:hover .view::after { transform: scaleX(1); }
+  .case-row:hover .view .arrow { transform: translate(3px, -3px); }
+  .tag:not(:last-child)::after { content: "·"; color: var(--muted); padding-left: 8px; }
+
+  /* ---- openboot CSS/ASCII dashboard — the one dark object (dark in both themes) ---- */
+  .dash {
+    background: #171311; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 24px 50px -28px rgba(24, 21, 18, 0.55);
+    font-family: var(--font-mono); font-size: 12px; line-height: 1.65;
+    color: #cfc6b8; max-width: 560px;
+  }
+  .dash-chrome {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 14px; background: #1f1a16; border-bottom: 1px solid #2a241f;
+  }
+  .dash-dots { display: flex; gap: 7px; }
+  .dash-dots i { width: 11px; height: 11px; border-radius: 50%; display: block; background: #5a5048; }
+  .dash-dots i:first-child { background: var(--accent); }
+  .dash-url { color: #8c8276; font-size: 11px; background: #15110e; border-radius: 4px; padding: 3px 10px; }
+  .dash-body { padding: 16px 18px 20px; }
+  .dash-body .ok { color: #9bb38a; }
+  .dash-body .spin, .dash-body .dash-meter { color: var(--accent); }
+  .dash-body .dim { color: #8c8276; }
+
+  /* ---- ledger collapses to a single column on small screens ---- */
+  @media (max-width: 860px) {
+    .case-grid { grid-template-columns: 1fr; gap: 8px; }
+    .case-num { font-size: clamp(72px, 22vw, 120px); }
+  }
 }
 
 /* ---------------------------------------------------------------------------

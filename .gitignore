@@ -35,6 +35,9 @@ Thumbs.db
 # Superpowers brainstorm companion
 .superpowers/
 
+# Playwright MCP scratch (screenshots, console logs, page dumps)
+.playwright-mcp/
+
 # Astro
 .astro/
 

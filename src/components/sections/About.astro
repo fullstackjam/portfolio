@@ -2,20 +2,14 @@
 import type { ProfileData } from '../../lib/types';
 import { ABOUT } from '../../data/profile';
 import RevealText from '../RevealText.tsx';
-import CountUp from '../CountUp.tsx';
 interface Props { profile: ProfileData; sinceYear: number; topLanguages: string[]; }
 const { profile, sinceYear, topLanguages } = Astro.props;
-const stats = [
-  { label: 'Public repositories', value: profile.publicRepos, count: true },
-  { label: 'GitHub stars', value: profile.totalStars, count: true },
-  { label: 'Shipping since', value: sinceYear, count: false },
-];
 ---
 <section id="about" class="container-x py-28 sm:py-40 border-t hairline">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-12">
     <div class="lg:col-span-3">
       <div class="lg:sticky lg:top-10 flex lg:flex-col items-center lg:items-start gap-6">
-        <p class="label">01 — About</p>
+        <p class="label">About</p>
         <img
           src={profile.avatarUrl}
           alt={profile.name}
@@ -29,19 +23,8 @@ const stats = [
         <RevealText text={ABOUT} accent="good" client:visible />
       </h2>
       <p class="label mt-10">
-        Works mostly in — <span class="normal-case tracking-[0.14em]">{topLanguages.slice(0, 3).join(' / ') || '—'}</span>
+        Works mostly in — <span class="normal-case tracking-[0.14em]">{topLanguages.slice(0, 3).join(' / ') || '—'}</span> · since {sinceYear}
       </p>
     </div>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-3 mt-24 sm:mt-32 border-t hairline pt-2 sm:pt-0">
-    {stats.map((s, i) => (
-      <div class={`py-10 sm:py-12 ${i > 0 ? 'border-t sm:border-t-0 sm:border-l hairline sm:pl-10' : ''}`}>
-        <div class="serif tnum leading-none text-[clamp(3.75rem,8vw,7rem)]">
-          {s.count ? <CountUp value={s.value} client:visible /> : String(s.value)}
-        </div>
-        <p class="label mt-4">{s.label}</p>
-      </div>
-    ))}
   </div>
 </section>

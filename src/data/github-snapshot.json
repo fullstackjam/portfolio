@@ -3,13 +3,7 @@
     "name": "fullstackjam",
     "bio": "Fullstack engineer building for the web and the cloud.",
     "location": "Remote",
-    "avatarUrl": "https://github.com/fullstackjam.png",
-    "followers": 0,
-    "publicRepos": 0,
-    "totalStars": 0
+    "avatarUrl": "https://github.com/fullstackjam.png"
   },
-  "repos": [],
-  "languages": [],
-  "contributions": [],
-  "totalContributions": 0
+  "languages": []
 }
