@@ -5,7 +5,6 @@ export interface LangStat {
 
 export interface ProfileData {
   name: string;
-  bio: string;
   location: string;
   avatarUrl: string;
 }

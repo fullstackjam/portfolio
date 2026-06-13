@@ -69,6 +69,7 @@ export default function CaseFootnote({ prompt, cmd, note, action }: Footnote) {
       aria-label={`Copy command: ${cmd}`}
     >
       {body}
+      <span className="sr-only" aria-live="polite">{copied ? 'Copied to clipboard' : ''}</span>
     </button>
   );
 }

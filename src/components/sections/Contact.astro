@@ -21,8 +21,9 @@ const others = SOCIAL_LINKS.filter((l) => l.name !== 'Email');
     )}
     <div class="mt-20 sm:mt-28 border-t hairline pt-8 flex flex-wrap gap-x-10 gap-y-4">
       {others.map((l, i) => (
-        <a href={l.url} target="_blank" rel="noopener" class="label hover:[color:var(--accent)] transition-colors">
-          <span class="tnum mr-2">{String(i + 1).padStart(2, '0')}</span>{l.name} ↗
+        <a href={l.url} target="_blank" rel="noopener noreferrer" class="label hover:[color:var(--accent)] transition-colors">
+          <span class="tnum mr-2">{String(i + 1).padStart(2, '0')}</span>{l.name} <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
         </a>
       ))}
     </div>

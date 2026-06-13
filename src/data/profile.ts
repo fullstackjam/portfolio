@@ -2,9 +2,8 @@ import type { Project } from '../lib/types';
 
 export const GITHUB_USER = 'fullstackjam';
 
-/** Optional overrides. Leave bio '' to use the live GitHub bio. */
+/** Optional overrides applied on top of the live GitHub profile. */
 export const OVERRIDES = {
-  bio: '',
   availableForWork: true,
 };
 
@@ -42,7 +41,7 @@ export const PROJECTS: Project[] = [
     name: 'k8s-gitops',
     url: 'https://github.com/fullstackjam/k8s-gitops',
     year: '2022 → now',
-    language: 'Go',
+    language: 'Python',
     topics: ['Kubernetes', 'GitOps', 'ArgoCD'],
     story:
       'I wanted a cluster I could rebuild from zero, so all the infrastructure is code, reconciled by GitOps: git is the source of truth and nobody runs kubectl apply by hand.',
@@ -72,10 +71,10 @@ export const PROJECTS: Project[] = [
     name: 'blog',
     url: 'https://blog.fullstackjam.com',
     year: '2022 → now',
-    language: 'Hugo',
-    topics: ['self-hosted', 'writing'],
+    language: 'HTML',
+    topics: ['Zola', 'GitHub Pages', 'writing'],
     story:
-      'Notes and writing on the things I build — GitOps, homelab, dev environments, AI workflows — built and hosted on my own stack, because owning the publishing pipeline is worth it.',
+      'Notes and writing on the things I build — GitOps, homelab, dev environments, AI workflows — a static site built with Zola and published to GitHub Pages, because owning what you say is worth more than owning the servers.',
     reflection: {
       label: 'why I write',
       text: 'Writing it down is how I find out whether I actually understand it.',

@@ -2,8 +2,22 @@
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.tsx';
 import SmoothScroll from '../components/SmoothScroll.tsx';
+import { SOCIAL_LINKS } from '../data/profile';
 interface Props { title: string; description?: string; }
 const { title, description = 'Fullstack engineer — reliable systems, delightful interfaces.' } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+
+// JSON-LD Person, with sameAs wired from the real social links.
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'fullstackjam',
+  url: Astro.site?.href,
+  jobTitle: 'Fullstack engineer',
+  sameAs: SOCIAL_LINKS.filter((l) => l.name !== 'Email').map((l) => l.url),
+};
 ---
 <!doctype html>
 <html lang="en" data-theme="light">
@@ -12,8 +26,31 @@ const { title, description = 'Fullstack engineer — reliable systems, delightfu
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#f7f4ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f0e0d" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="fullstackjam" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:creator" content="@fullstackjam" />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(personLd)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -27,6 +64,7 @@ const { title, description = 'Fullstack engineer — reliable systems, delightfu
     </script>
   </head>
   <body>
+    <a href="#main" class="skip-link">Skip to content</a>
     <SmoothScroll client:load />
     <ThemeToggle client:load />
     <slot />

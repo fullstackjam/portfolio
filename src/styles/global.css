@@ -15,7 +15,7 @@
   --surface: #efe9de;
   --fg: #181512;
   --accent: #a33a12;
-  --muted: #71695c;
+  --muted: #6a6253; /* clears WCAG AA (4.5:1) on both --bg and the --surface tint */
   --rule: #e1dacb;
 }
 
@@ -46,6 +46,34 @@
     outline: 1.5px solid var(--accent);
     outline-offset: 4px;
   }
+
+  /* Visually hidden but available to screen readers. */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Skip link — off-screen until focused, then pinned to the top-left. */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem; left: 0.75rem;
+    z-index: 200;
+    transform: translateY(-150%);
+    background: var(--fg);
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.85rem;
+    border-radius: 4px;
+    transition: transform 0.2s ease;
+  }
+  .skip-link:focus-visible { transform: translateY(0); outline-offset: 2px; }
 
   /* Film-grain overlay — very low opacity, sits above everything, never interactive. */
   body::after {
@@ -149,7 +177,9 @@ html.lenis, html.lenis body { height: auto; }
 
   /* ---- Hero headline: keep each comma-line intact; proof-underline the accent ---- */
   .hero-headline .block { white-space: nowrap; }
-  @media (max-width: 560px) { .hero-headline .block { white-space: normal; } }
+  /* Below Tailwind's `sm` (640px) the layout is phone-width; let the headline
+     wrap so a long half can't overflow horizontally on large phones. */
+  @media (max-width: 639px) { .hero-headline .block { white-space: normal; } }
   /* underline drawn as a background on the word itself, so RevealText's
      overflow:hidden mask never clips it and it never strikes the next word */
   .hero-headline .accent {
@@ -262,6 +292,9 @@ html.lenis, html.lenis body { height: auto; }
 
   /* ---- openboot CSS/ASCII dashboard — the one dark object (dark in both themes) ---- */
   .dash {
+    /* The one dark object — pin the bright accent so the spinner / meter / dot
+       stay vivid in light theme too (otherwise they inherit the dark terracotta). */
+    --accent: #f0603a;
     background: #171311; border-radius: 8px; overflow: hidden;
     box-shadow: 0 24px 50px -28px rgba(24, 21, 18, 0.55);
     font-family: var(--font-mono); font-size: 12px; line-height: 1.65;

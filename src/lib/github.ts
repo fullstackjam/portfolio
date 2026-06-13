@@ -1,26 +1,18 @@
 import type { LangStat, GitHubData, ProfileData, CommitInfo } from './types';
 import { cached } from './cache';
-import { GITHUB_USER, OVERRIDES, PROJECTS } from '../data/profile';
+import { GITHUB_USER, PROJECTS } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
 interface RawUser {
   login: string;
   name: string | null;
-  bio: string | null;
   location: string | null;
   avatar_url: string;
 }
 
 interface RawRepo {
-  name: string;
-  description: string | null;
   language: string | null;
-  stargazers_count: number;
-  forks_count: number;
-  topics?: string[];
-  homepage: string | null;
-  html_url: string;
   fork: boolean;
 }
 
@@ -80,12 +72,12 @@ async function fetchAll(token?: string): Promise<GitHubData> {
 
   const profile: ProfileData = {
     name: user.name || user.login,
-    bio: OVERRIDES.bio || user.bio || '',
     location: user.location || 'Remote',
     avatarUrl: user.avatar_url,
   };
 
-  const languages: LangStat[] = aggregateLanguages(rawRepos);
+  // Exclude forks so the language mix reflects work actually authored here.
+  const languages: LangStat[] = aggregateLanguages(rawRepos.filter((r) => !r.fork));
 
   // Live latest commit for any project that opts in via `latestCommit`.
   const latestCommits: Record<string, CommitInfo> = {};

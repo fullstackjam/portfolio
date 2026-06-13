@@ -11,15 +11,9 @@ export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
+    // Sync state with the theme the inline pre-paint script already applied.
     const current = (document.documentElement.getAttribute('data-theme') as Theme) || 'light';
     setTheme(current);
-    const handler = (e: Event) => {
-      const next = (e as CustomEvent).detail as Theme;
-      apply(next);
-      setTheme(next);
-    };
-    window.addEventListener('themechange', handler);
-    return () => window.removeEventListener('themechange', handler);
   }, []);
 
   const toggle = () => {
