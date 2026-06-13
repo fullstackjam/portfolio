@@ -18,6 +18,11 @@ describe('PROJECTS narrative shape', () => {
       if (p.footnote !== null) {
         expect(typeof p.footnote.prompt).toBe('string');
         expect(typeof p.footnote.cmd).toBe('string');
+        const action = p.footnote.action;
+        expect(['copy', 'link']).toContain(action.kind);
+        if (action.kind === 'link') {
+          expect(action.href).toMatch(/^https?:\/\//);
+        }
       }
     }
   });
