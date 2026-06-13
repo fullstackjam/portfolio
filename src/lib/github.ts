@@ -58,7 +58,6 @@ function externalProjectRefs(): { owner: string; name: string }[] {
 }
 
 const API = 'https://api.github.com';
-const GQL = 'https://api.github.com/graphql';
 
 function headers(token?: string): Record<string, string> {
   const h: Record<string, string> = {
