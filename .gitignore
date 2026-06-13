@@ -48,3 +48,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Local workflow artifacts (brainstorm/spec/plan/mockup) — not part of the codebase
+docs/superpowers/
