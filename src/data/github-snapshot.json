@@ -5,5 +5,13 @@
     "location": "Remote",
     "avatarUrl": "https://github.com/fullstackjam.png"
   },
-  "languages": []
+  "languages": [],
+  "latestCommits": {
+    "fullstackjam/lark-coding-agent-bridge": {
+      "message": "test(bot): cover wake-up card rendering through channel.ts",
+      "sha": "780f22b",
+      "url": "https://github.com/fullstackjam/lark-coding-agent-bridge/commit/780f22bcce70ef3a35c34c51abd615c490644b15",
+      "date": "2026-06-07T05:31:11Z"
+    }
+  }
 }

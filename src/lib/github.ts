@@ -1,6 +1,6 @@
-import type { LangStat, GitHubData, ProfileData } from './types';
+import type { LangStat, GitHubData, ProfileData, CommitInfo } from './types';
 import { cached } from './cache';
-import { GITHUB_USER, OVERRIDES } from '../data/profile';
+import { GITHUB_USER, OVERRIDES, PROJECTS } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
@@ -54,6 +54,25 @@ async function ghJson(url: string, token?: string): Promise<any> {
   return res.json();
 }
 
+/** Latest commit on a repo's default branch. Tolerant: returns null on failure
+ *  (so one unreachable repo never sinks the whole data fetch). */
+async function fetchLatestCommit(owner: string, repo: string, token?: string): Promise<CommitInfo | null> {
+  try {
+    const arr = (await ghJson(`${API}/repos/${owner}/${repo}/commits?per_page=1`, token)) as any[];
+    const c = arr?.[0];
+    if (!c) return null;
+    return {
+      message: String(c.commit?.message ?? '').split('\n')[0],
+      sha: String(c.sha ?? '').slice(0, 7),
+      url: c.html_url,
+      date: c.commit?.author?.date ?? '',
+    };
+  } catch (err) {
+    console.warn(`GitHub latest commit ${owner}/${repo} unavailable:`, err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
 async function fetchAll(token?: string): Promise<GitHubData> {
   const user = (await ghJson(`${API}/users/${GITHUB_USER}`, token)) as RawUser;
   if (!user || typeof user.login !== 'string') throw new Error('GitHub: unexpected user payload');
@@ -68,7 +87,17 @@ async function fetchAll(token?: string): Promise<GitHubData> {
 
   const languages: LangStat[] = aggregateLanguages(rawRepos);
 
-  return { profile, languages };
+  // Live latest commit for any project that opts in via `latestCommit`.
+  const latestCommits: Record<string, CommitInfo> = {};
+  await Promise.all(
+    PROJECTS.filter((p) => p.latestCommit).map(async (p) => {
+      const { owner, repo } = p.latestCommit!;
+      const info = await fetchLatestCommit(owner, repo, token);
+      if (info) latestCommits[`${owner}/${repo}`] = info;
+    }),
+  );
+
+  return { profile, languages, latestCommits };
 }
 
 /** Orchestrator: cached live data, snapshot fallback so the site is never empty. */

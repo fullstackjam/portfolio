@@ -50,7 +50,7 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: 'When "rebuild" becomes a non-event, you dare to change boldly.',
     },
-    footnote: { prompt: '$', cmd: 'argocd app sync', note: 'git is the source of truth; the cluster follows', action: { kind: 'copy' } },
+    footnote: { prompt: '→', cmd: 'k8s-gitops.fullstackjam.com', note: 'architecture & docs', action: { kind: 'link', href: 'https://k8s-gitops.fullstackjam.com/' } },
   },
   {
     name: 'lark-coding-agent-bridge',
@@ -64,7 +64,9 @@ export const PROJECTS: Project[] = [
       label: 'what it taught me',
       text: 'An elegant interface is usually just catching someone else\'s mess.',
     },
-    footnote: { prompt: 'commit', cmd: 'streaming over Lark long-connection', action: { kind: 'link', href: 'https://github.com/fullstackjam/lark-coding-agent-bridge/commits' } },
+    // Footnote is replaced at render time with the live latest commit; this is the fallback.
+    footnote: { prompt: 'commit', cmd: 'latest on GitHub', action: { kind: 'link', href: 'https://github.com/fullstackjam/lark-coding-agent-bridge/commits' } },
+    latestCommit: { owner: 'fullstackjam', repo: 'lark-coding-agent-bridge' },
   },
   {
     name: 'blog',
@@ -87,10 +89,4 @@ export const SOCIAL_LINKS = [
   { name: 'LinkedIn', url: 'https://linkedin.com/in/fullstackjam-ma-a817b5239/' },
   { name: 'X', url: 'https://twitter.com/fullstackjam' },
   { name: 'Email', url: 'mailto:fullstackjam@outlook.com' },
-];
-
-/** Curated tools shown alongside auto-detected GitHub languages. */
-export const CURATED_SKILLS = [
-  'TypeScript', 'Go', 'Python', 'React', 'Astro', 'Node.js',
-  'Kubernetes', 'Docker', 'Cloudflare', 'PostgreSQL', 'Terraform', 'CI/CD',
 ];

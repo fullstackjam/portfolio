@@ -10,9 +10,22 @@ export interface ProfileData {
   avatarUrl: string;
 }
 
+export interface CommitInfo {
+  /** first line of the commit message */
+  message: string;
+  /** short (7-char) sha */
+  sha: string;
+  /** html_url of the commit */
+  url: string;
+  /** ISO author date */
+  date: string;
+}
+
 export interface GitHubData {
   profile: ProfileData;
   languages: LangStat[];
+  /** latest commit per "owner/repo", for projects that declare `latestCommit` */
+  latestCommits: Record<string, CommitInfo>;
 }
 
 export interface Reflection {
@@ -45,4 +58,6 @@ export interface Project {
   footnote: Footnote | null;
   /** renders the CSS/ASCII openboot dashboard in the visual slot */
   hasDashboard?: boolean;
+  /** when set, the footnote is replaced at render time with this repo's live latest commit */
+  latestCommit?: { owner: string; repo: string };
 }

@@ -3,12 +3,11 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/sections/Hero.astro';
 import About from '../components/sections/About.astro';
 import Work from '../components/sections/Work.astro';
-import Stack from '../components/sections/Stack.astro';
 import Contact from '../components/sections/Contact.astro';
 import Footer from '../components/Footer.astro';
 import { getGitHubData } from '../lib/github';
 import snapshot from '../data/github-snapshot.json';
-import type { GitHubData } from '../lib/types';
+import type { GitHubData, Project } from '../lib/types';
 import { PROJECTS } from '../data/profile';
 
 let data: GitHubData;
@@ -21,12 +20,29 @@ try {
 
 const sinceYear = 2021;
 const topLanguages = data.languages.map((l) => l.name);
+
+// Replace the footnote of any project that opts into `latestCommit` with its
+// live commit (message + link). Falls back to the project's static footnote.
+const trunc = (s: string, n = 64) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const projects: Project[] = PROJECTS.map((p) => {
+  if (!p.latestCommit) return p;
+  const info = data.latestCommits?.[`${p.latestCommit.owner}/${p.latestCommit.repo}`];
+  if (!info) return p;
+  return {
+    ...p,
+    footnote: {
+      prompt: 'commit',
+      cmd: trunc(info.message),
+      note: info.sha,
+      action: { kind: 'link', href: info.url },
+    },
+  };
+});
 ---
 <Base title="fullstackjam — reliable systems, delightful interfaces">
   <Hero profile={data.profile} />
   <About profile={data.profile} sinceYear={sinceYear} topLanguages={topLanguages} />
-  <Work projects={PROJECTS} />
-  <Stack languages={data.languages} />
+  <Work projects={projects} />
   <Contact />
   <Footer />
 </Base>
