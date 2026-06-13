@@ -17,11 +17,6 @@
   --accent: #a33a12;
   --muted: #71695c;
   --rule: #e1dacb;
-  --hm-0: #eae3d3;
-  --hm-1: #e6b69e;
-  --hm-2: #d68a66;
-  --hm-3: #bb5a32;
-  --hm-4: #93380f;
 }
 
 :root[data-theme='dark'] {
@@ -31,11 +26,6 @@
   --accent: #f05e36;
   --muted: #8b8275;
   --rule: #272219;
-  --hm-0: #1c1916;
-  --hm-1: #58392b;
-  --hm-2: #8c4f33;
-  --hm-3: #c66a3c;
-  --hm-4: #f05e36;
 }
 
 @layer base {
@@ -131,26 +121,6 @@ html.lenis, html.lenis body { height: auto; }
   }
   :root.js [data-grow]:not(.is-in) { transform: scaleX(0); }
   :root.js [data-grow].is-in { transform: scaleX(1); }
-
-  /* Work index numbers — outlined ghosts that ink in accent on row hover. */
-  .ghost-num {
-    color: transparent;
-    -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 30%, transparent);
-    transition: -webkit-text-stroke-color 0.45s ease;
-  }
-  .work-row:hover .ghost-num { -webkit-text-stroke-color: var(--accent); }
-
-  /* Work rows — full-bleed hover surface with a weighty lateral shift. */
-  .work-row { transition: background-color 0.5s ease; }
-  .work-row:hover { background-color: var(--surface); }
-  .work-title { transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.4s ease; }
-  .work-row:hover .work-title { transform: translateX(0.75rem); color: var(--accent); }
-  .work-arrow {
-    opacity: 0;
-    transform: translate(-0.4rem, 0.4rem);
-    transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-  .work-row:hover .work-arrow { opacity: 1; transform: translate(0, 0); }
 
   /* Contact — inverted theatrical panel. Locally re-binds the token set so
      selection, rules, and underlines keep working inside it in both themes. */
