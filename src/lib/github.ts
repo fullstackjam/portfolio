@@ -1,6 +1,6 @@
 import type { LangStat, GitHubData, ProfileData } from './types';
 import { cached } from './cache';
-import { GITHUB_USER, OVERRIDES, PROJECTS } from '../data/profile';
+import { GITHUB_USER, OVERRIDES } from '../data/profile';
 import snapshot from '../data/github-snapshot.json';
 import type { KVNamespace } from '@cloudflare/workers-types';
 
@@ -10,8 +10,6 @@ interface RawUser {
   bio: string | null;
   location: string | null;
   avatar_url: string;
-  followers: number;
-  public_repos: number;
 }
 
 interface RawRepo {
@@ -39,23 +37,6 @@ export function aggregateLanguages(repos: { language: string | null }[]): LangSt
     .sort((a, b) => b.pct - a.pct);
 }
 
-export function sumStars(repos: RawRepo[]): number {
-  return repos.reduce((s, r) => s + r.stargazers_count, 0);
-}
-
-/** Curated projects that live outside `GITHUB_USER`'s account but should still
- *  count toward the GitHub stars stat (e.g. orgs the user co-owns). */
-function externalProjectRefs(): { owner: string; name: string }[] {
-  const refs: { owner: string; name: string }[] = [];
-  for (const p of PROJECTS) {
-    const m = p.url.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+?)\/?$/);
-    if (!m) continue;
-    const [, owner, name] = m;
-    if (owner.toLowerCase() === GITHUB_USER.toLowerCase()) continue;
-    refs.push({ owner, name });
-  }
-  return refs;
-}
 
 const API = 'https://api.github.com';
 
@@ -79,33 +60,16 @@ async function fetchAll(token?: string): Promise<GitHubData> {
   if (!user || typeof user.login !== 'string') throw new Error('GitHub: unexpected user payload');
   const rawRepos = (await ghJson(`${API}/users/${GITHUB_USER}/repos?per_page=100&sort=updated`, token)) as RawRepo[];
 
-  const externalStars = (
-    await Promise.all(
-      externalProjectRefs().map(async ({ owner, name }) => {
-        try {
-          const r = (await ghJson(`${API}/repos/${owner}/${name}`, token)) as RawRepo;
-          return r.stargazers_count ?? 0;
-        } catch (err) {
-          console.warn(`GitHub external repo ${owner}/${name} unavailable:`, err instanceof Error ? err.message : err);
-          return 0;
-        }
-      }),
-    )
-  ).reduce((s, n) => s + n, 0);
-
   const profile: ProfileData = {
     name: user.name || user.login,
     bio: OVERRIDES.bio || user.bio || '',
     location: user.location || 'Remote',
     avatarUrl: user.avatar_url,
-    followers: user.followers,
-    publicRepos: user.public_repos,
-    totalStars: sumStars(rawRepos) + externalStars,
   };
 
   const languages: LangStat[] = aggregateLanguages(rawRepos);
 
-  return { profile, repos: [], languages };
+  return { profile, languages };
 }
 
 /** Orchestrator: cached live data, snapshot fallback so the site is never empty. */
