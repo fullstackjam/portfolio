@@ -1,0 +1,51 @@
+---
+import { RESUME, METRICS } from '../../data/resume';
+import { SOCIAL_LINKS, OVERRIDES } from '../../data/profile';
+import RevealText from '../RevealText.tsx';
+
+const github = SOCIAL_LINKS.find((l) => l.name === 'GitHub');
+const email = SOCIAL_LINKS.find((l) => l.name === 'Email');
+---
+<header class="container-x pt-10 sm:pt-16 pb-4">
+  <div class="flex items-baseline justify-between gap-4 pb-4 pr-16 sm:pr-20">
+    <span class="label"><span class="[color:var(--accent)]" aria-hidden="true">✦</span>&nbsp;{RESUME.name} — résumé</span>
+    <a href="/" class="label tnum hover:[color:var(--accent)] transition-colors">fullstackjam.com <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="rule-x" data-grow></div>
+
+  <div class="pt-12 sm:pt-16">
+    <p class="label mb-6 [color:var(--accent)]">{RESUME.eyebrow}</p>
+    <h1 class="display text-[clamp(2.3rem,6.2vw,5.5rem)] max-w-[19ch]">
+      <RevealText text={RESUME.headline} accent={RESUME.accentWord} client:load />
+    </h1>
+    <p class="mt-8 max-w-2xl text-base sm:text-lg leading-relaxed muted">{RESUME.subline}</p>
+  </div>
+
+  <div class="mt-12 sm:mt-16 grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-6 border-t hairline pt-10">
+    {METRICS.map((m) => (
+      <div>
+        <div class="serif text-[clamp(2.1rem,4.6vw,3.2rem)] leading-none tnum">{m.value}</div>
+        <div class="label mt-3">{m.label}</div>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+    <a
+      href={RESUME.pdf.href}
+      download
+      class="inline-flex items-center gap-2 border rule-c px-5 py-2.5 font-[var(--font-mono)] text-[13px] tracking-[0.04em] hover:[border-color:var(--accent)] hover:[color:var(--accent)] transition-colors"
+    >
+      {RESUME.pdf.label} <span aria-hidden="true">↓</span>
+    </a>
+    {github && (
+      <a href={github.url} target="_blank" rel="noopener noreferrer" class="label hover:[color:var(--accent)] transition-colors">GitHub <span aria-hidden="true">↗</span></a>
+    )}
+    {email && (
+      <a href={email.url} class="label hover:[color:var(--accent)] transition-colors">Email <span aria-hidden="true">↗</span></a>
+    )}
+    {OVERRIDES.availableForWork && (
+      <span class="label [color:var(--accent)] inline-flex items-center gap-2"><span aria-hidden="true">●</span> Open to new opportunities</span>
+    )}
+  </div>
+</header>

@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import ResumeHero from '../components/sections/ResumeHero.astro';
+import Experience from '../components/sections/Experience.astro';
+import Skills from '../components/sections/Skills.astro';
+import Contact from '../components/sections/Contact.astro';
+import Footer from '../components/Footer.astro';
+import { RESUME, EDUCATION } from '../data/resume';
+import { PROJECTS, SOCIAL_LINKS } from '../data/profile';
+
+const title = `${RESUME.name} — résumé`;
+
+const resumeLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: RESUME.name,
+  alternateName: 'fullstackjam',
+  jobTitle: 'SRE / Platform Engineer',
+  url: new URL('/resume', Astro.site).href,
+  worksFor: { '@type': 'Organization', name: 'Huami (Zepp Health)' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: EDUCATION.school },
+  knowsAbout: [
+    'Site Reliability Engineering',
+    'Kubernetes',
+    'GitOps',
+    'Argo CD',
+    'CI/CD',
+    'Observability',
+    'Platform Engineering',
+  ],
+  sameAs: SOCIAL_LINKS.filter((l) => l.name !== 'Email').map((l) => l.url),
+};
+---
+<Base title={title} description={RESUME.subline}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(resumeLd)} slot="head" />
+
+  <main id="main">
+    <ResumeHero />
+    <Experience />
+    <Skills />
+
+    <section id="work" class="container-x py-20 sm:py-28 border-t hairline">
+      <p class="label">Selected work</p>
+      <p class="mt-8 serif text-[clamp(1.5rem,2.8vw,2.2rem)] max-w-2xl leading-snug">
+        I build in the open — a cluster I can rebuild from zero, a one-command Mac setup, an AI agent living inside Lark.
+      </p>
+      <ul class="mt-10 border-t hairline">
+        {PROJECTS.map((p) => (
+          <li class="border-b hairline py-5 flex items-baseline gap-x-6 gap-y-2 flex-wrap">
+            <a href={p.url} target="_blank" rel="noopener noreferrer" class="serif text-[clamp(1.2rem,2vw,1.6rem)] ul shrink-0">{p.name}</a>
+            <span class="label tnum normal-case tracking-[0.1em] flex-1 min-w-0">{[p.language, ...p.topics].join(' · ')}</span>
+            <a href={p.url} target="_blank" rel="noopener noreferrer" class="view label shrink-0">view <span class="arrow accent" aria-hidden="true">↗</span></a>
+          </li>
+        ))}
+      </ul>
+      <a href="/#work" class="inline-block mt-8 label hover:[color:var(--accent)] transition-colors">Full case studies on the home page <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section id="education" class="container-x py-20 sm:py-28 border-t hairline">
+      <p class="label">Education</p>
+      <div class="mt-10 flex items-baseline justify-between gap-6 flex-wrap">
+        <div>
+          <h3 class="serif text-[clamp(1.4rem,2.4vw,2rem)]">{EDUCATION.school}</h3>
+          <p class="muted mt-2">{EDUCATION.degree}</p>
+        </div>
+        <span class="label tnum normal-case tracking-[0.14em]">{EDUCATION.period}</span>
+      </div>
+    </section>
+
+    <Contact />
+  </main>
+  <Footer />
+</Base>

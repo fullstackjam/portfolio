@@ -60,3 +60,34 @@ export interface Project {
   /** when set, the footnote is replaced at render time with this repo's live latest commit */
   latestCommit?: { owner: string; repo: string };
 }
+
+/* --- Résumé page ---------------------------------------------------------- */
+
+export interface ResumeMetric {
+  /** headline figure, e.g. "↓70%" or "99.95%" */
+  value: string;
+  /** what it measures, e.g. "Model cost" */
+  label: string;
+}
+
+export interface ExperienceItem {
+  company: string;
+  /** role line, e.g. "SRE · Tech Lead" */
+  role: string;
+  location: string;
+  /** display period, e.g. "2025.09 → now" */
+  period: string;
+  /** outcome-led bullets, first-person, understated */
+  bullets: string[];
+}
+
+export interface SkillGroup {
+  label: string;
+  items: string[];
+}
+
+export interface EducationItem {
+  school: string;
+  degree: string;
+  period: string;
+}
