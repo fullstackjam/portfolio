@@ -184,10 +184,10 @@ html.lenis, html.lenis body { height: auto; }
      overflow:hidden mask never clips it and it never strikes the next word */
   .hero-headline .accent {
     background-image: linear-gradient(
-      color-mix(in srgb, var(--accent) 38%, transparent),
-      color-mix(in srgb, var(--accent) 38%, transparent));
-    background-size: 100% 0.07em;
-    background-position: 0 95%;
+      color-mix(in srgb, var(--accent) 22%, transparent),
+      color-mix(in srgb, var(--accent) 22%, transparent));
+    background-size: 100% 0.82em;
+    background-position: 0 0.1em;
     background-repeat: no-repeat;
   }
 
