@@ -3,6 +3,7 @@ import { CANNED, CHIPS } from '../lib/console-responses';
 import type { Chip } from '../lib/console-responses';
 
 interface Message {
+  id: number;
   role: 'user' | 'assistant';
   content: string;
   streaming?: boolean;
@@ -32,13 +33,15 @@ export default function Console() {
   const [streaming, setStreaming] = useState(false);
   const hasOpened = useRef(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const msgId = useRef(0);
+  function nextId() { return ++msgId.current; }
 
   function handleOpen() {
     if (!hasOpened.current) {
       hasOpened.current = true;
       setMessages([
-        { role: 'user', content: 'whoami' },
-        { role: 'assistant', content: CANNED.whoami },
+        { id: nextId(), role: 'user', content: 'whoami' },
+        { id: nextId(), role: 'assistant', content: CANNED.whoami },
       ]);
     }
     setOpen(true);
@@ -52,8 +55,8 @@ export default function Console() {
     if (preset) {
       setMessages(m => [
         ...m,
-        { role: 'user', content: trimmed },
-        { role: 'assistant', content: CANNED[preset] },
+        { id: nextId(), role: 'user', content: trimmed },
+        { id: nextId(), role: 'assistant', content: CANNED[preset] },
       ]);
       setInput('');
       return;
@@ -61,8 +64,8 @@ export default function Console() {
 
     setMessages(m => [
       ...m,
-      { role: 'user', content: trimmed },
-      { role: 'assistant', content: '', streaming: true },
+      { id: nextId(), role: 'user', content: trimmed },
+      { id: nextId(), role: 'assistant', content: '', streaming: true },
     ]);
     setInput('');
     setStreaming(true);
@@ -77,12 +80,15 @@ export default function Console() {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+      let buf = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        for (const line of chunk.split('\n')) {
+        buf += decoder.decode(value, { stream: true });
+        const lines = buf.split('\n');
+        buf = lines.pop()!;
+        for (const line of lines) {
           if (!line.startsWith('data: ') || line === 'data: [DONE]') continue;
           try {
             const json = JSON.parse(line.slice(6)) as {
@@ -104,7 +110,7 @@ export default function Console() {
       setMessages(m => {
         const copy = [...m];
         const last = copy[copy.length - 1];
-        if (last?.streaming) copy[copy.length - 1] = { role: 'assistant', content: '❯ Error — try again.' };
+        if (last?.streaming) copy[copy.length - 1] = { ...last, id: last.id, role: 'assistant', content: 'Error — try again.', streaming: false };
         return copy;
       });
     } finally {
@@ -186,8 +192,8 @@ export default function Console() {
           padding: 13, fontSize: 11, color: C.text, lineHeight: 1.6,
           overflowY: 'auto', flex: 1, minHeight: 120,
         }}>
-          {messages.map((m, i) => (
-            <div key={i} style={{ marginBottom: m.role === 'assistant' ? 11 : 9, whiteSpace: 'pre-wrap' }}>
+          {messages.map((m) => (
+            <div key={m.id} style={{ marginBottom: m.role === 'assistant' ? 11 : 9, whiteSpace: 'pre-wrap' }}>
               {m.role === 'user'
                 ? <><span style={{ color: C.prompt }}>❯ </span>{m.content}</>
                 : <span style={{ color: m.streaming ? C.muted : C.text }}>

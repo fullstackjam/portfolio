@@ -12,9 +12,13 @@ export const CANNED: Record<Chip, string> = {
 
   stack: `Go · TypeScript · Python\nKubernetes · ArgoCD · Cloudflare Workers\nAstro · React · PostgreSQL`,
 
-  projects: PROJECTS.map(p => `${p.name} (${p.year}) — ${p.story.split('.')[0]}.`).join('\n'),
+  projects: PROJECTS.length > 0
+    ? PROJECTS.map(p => `${p.name} (${p.year}) — ${p.story.split('.')[0]}.`).join('\n')
+    : 'no projects yet',
 
-  now: `${PROJECTS[0].name} (${PROJECTS[0].year}): ${PROJECTS[0].story.split('.')[0]}.`,
+  now: PROJECTS[0]
+    ? `${PROJECTS[0].name} (${PROJECTS[0].year}): ${PROJECTS[0].story.split('.')[0]}.`
+    : 'nothing to report yet',
 
   contact: [
     socialUrl('Email').replace('mailto:', ''),
