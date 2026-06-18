@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.tsx';
 import SmoothScroll from '../components/SmoothScroll.tsx';
+import Console from '../components/Console';
 import { SOCIAL_LINKS } from '../data/profile';
 interface Props { title: string; description?: string; }
 const { title, description = 'Fullstack engineer — reliable systems, delightful interfaces.' } = Astro.props;
@@ -88,5 +89,6 @@ const personLd = {
         document.querySelectorAll('[data-grow]').forEach((el) => io.observe(el));
       }
     </script>
+    <Console client:load />
   </body>
 </html>
