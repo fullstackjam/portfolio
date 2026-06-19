@@ -83,6 +83,65 @@ describe('executeTool: list_repos', () => {
   });
 });
 
+function mockFetchStatus(payload: unknown, status: number) {
+  return vi.fn(async () => ({
+    ok: status >= 200 && status < 300,
+    status,
+    json: async () => payload,
+  })) as unknown as typeof fetch;
+}
+
+describe('executeTool: get_commits', () => {
+  beforeEach(() => { vi.restoreAllMocks(); });
+
+  it('returns formatted commit lines', async () => {
+    const commits = [
+      { sha: 'abcdef1234567', commit: { message: 'feat: add x\n\nbody', author: { date: '2026-06-15T10:00:00Z' } } },
+      { sha: '0123456789ab0', commit: { message: 'fix: y', author: { date: '2026-06-14T09:00:00Z' } } },
+    ];
+    global.fetch = mockFetch(commits);
+    const out = await executeTool('get_commits', { repo: 'openboot', limit: 2 }, mockKv());
+    expect(out).toContain('[abcdef1] 2026-06-15: feat: add x');
+    expect(out).toContain('[0123456] 2026-06-14: fix: y');
+  });
+
+  it('defaults limit to 5 when omitted', async () => {
+    const fetchSpy = mockFetch([]);
+    global.fetch = fetchSpy;
+    await executeTool('get_commits', { repo: 'openboot' }, mockKv());
+    const url = (fetchSpy as unknown as { mock: { calls: [string][] } }).mock.calls[0][0];
+    expect(url).toContain('per_page=5');
+  });
+
+  it('clamps limit to 10', async () => {
+    const fetchSpy = mockFetch([]);
+    global.fetch = fetchSpy;
+    await executeTool('get_commits', { repo: 'openboot', limit: 50 }, mockKv());
+    const url = (fetchSpy as unknown as { mock: { calls: [string][] } }).mock.calls[0][0];
+    expect(url).toContain('per_page=10');
+  });
+
+  it('clamps limit to minimum 1', async () => {
+    const fetchSpy = mockFetch([]);
+    global.fetch = fetchSpy;
+    await executeTool('get_commits', { repo: 'openboot', limit: 0 }, mockKv());
+    const url = (fetchSpy as unknown as { mock: { calls: [string][] } }).mock.calls[0][0];
+    expect(url).toContain('per_page=1');
+  });
+
+  it('returns repo not found on 404', async () => {
+    global.fetch = mockFetchStatus({}, 404);
+    const out = await executeTool('get_commits', { repo: 'nope' }, mockKv());
+    expect(out).toBe('repo not found');
+  });
+
+  it('returns rate limit string on 403', async () => {
+    global.fetch = mockFetchStatus({}, 403);
+    const out = await executeTool('get_commits', { repo: 'openboot' }, mockKv());
+    expect(out).toBe('GitHub rate limit hit — try again shortly');
+  });
+});
+
 describe('executeTool: unknown tool', () => {
   it('returns unknown tool string', async () => {
     const out = await executeTool('nonsense', {}, mockKv());

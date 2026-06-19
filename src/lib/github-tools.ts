@@ -118,12 +118,56 @@ async function listReposTool(kv: KVNamespace, token?: string): Promise<string> {
   }
 }
 
+interface RawCommit {
+  sha: string;
+  commit: { message: string; author: { date: string } };
+}
+
+async function getCommitsTool(
+  repo: string,
+  rawLimit: number,
+  kv: KVNamespace,
+  token?: string,
+): Promise<string> {
+  const limit = Math.max(1, Math.min(10, Math.floor(rawLimit)));
+  const key = `gh:commits:${GITHUB_USER}/${repo}:${limit}`;
+  try {
+    const lines = await cached<string[]>(kv, key, TTL, async () => {
+      const res = await fetch(`${API}/repos/${GITHUB_USER}/${repo}/commits?per_page=${limit}`, {
+        headers: headers(token),
+      });
+      if (res.status === 404) throw new Error('not_found');
+      if (res.status === 403) throw new Error('rate_limit');
+      if (!res.ok) throw new Error('fetch_failed');
+      const raw = (await res.json()) as RawCommit[];
+      return raw.map(c => {
+        const sha7 = c.sha.slice(0, 7);
+        const date = c.commit.author.date.slice(0, 10);
+        const firstLine = c.commit.message.split('\n')[0];
+        return `[${sha7}] ${date}: ${firstLine}`;
+      });
+    });
+    return lines.join('\n');
+  } catch (err) {
+    const msg = (err as Error).message;
+    if (msg === 'not_found') return 'repo not found';
+    if (msg === 'rate_limit') return 'GitHub rate limit hit — try again shortly';
+    return 'error fetching commits';
+  }
+}
+
 export async function executeTool(
   name: string,
-  _args: Record<string, unknown>,
+  args: Record<string, unknown>,
   kv: KVNamespace,
   token?: string,
 ): Promise<string> {
   if (name === 'list_repos') return listReposTool(kv, token);
+  if (name === 'get_commits') {
+    const repo = String(args.repo ?? '');
+    const limit = typeof args.limit === 'number' ? args.limit : 5;
+    if (!repo) return 'missing repo';
+    return getCommitsTool(repo, limit, kv, token);
+  }
   return 'unknown tool';
 }
