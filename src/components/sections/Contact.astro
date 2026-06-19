@@ -1,28 +1,45 @@
 ---
 import { SOCIAL_LINKS, OVERRIDES } from '../../data/profile';
-import RevealText from '../RevealText.tsx';
-import MagneticLink from '../MagneticLink.tsx';
 const email = SOCIAL_LINKS.find((l) => l.name === 'Email');
 const others = SOCIAL_LINKS.filter((l) => l.name !== 'Email');
 ---
 <section id="contact" class="theatre">
-  <div class="container-x py-32 sm:py-44">
-    <p class="label">Contact</p>
-    <h2 class="display text-[clamp(2.9rem,9.5vw,9.5rem)] mt-10 max-w-[18ch]">
-      <RevealText text="Let's build something good together." accent="good" client:visible />
+  <div class="container-x" style="padding-top:96px;padding-bottom:64px;">
+    <p class="label" style="margin:0 0 40px;color:var(--muted);">Contact</p>
+    <h2
+      class="display"
+      style="font-size:clamp(52px,10vw,118px);line-height:.92;letter-spacing:-.025em;margin:0;max-width:15ch;color:var(--fg);"
+    >
+      Let's build something <span style="font-style:italic;color:var(--accent);">good</span> together.
     </h2>
     {email && (
-      <div class="mt-14 sm:mt-20">
-        <p class="label mb-5">{OVERRIDES.availableForWork ? 'Available for work — say hello' : 'Say hello'}</p>
-        <MagneticLink href={email.url} client:visible className="serif italic accent ul text-[clamp(1.375rem,4vw,3rem)]">
+      <div style="margin-top:56px;">
+        <p class="label" style="margin:0 0 16px;color:var(--muted);">
+          {OVERRIDES.availableForWork ? 'Available for work — say hello' : 'Say hello'}
+        </p>
+        <a
+          href={email.url}
+          class="serif"
+          style="font-style:italic;font-size:clamp(24px,4.4vw,52px);color:var(--accent);text-decoration:none;border-bottom:1px solid color-mix(in srgb, var(--accent) 40%, transparent);padding-bottom:4px;"
+        >
           {email.url.replace('mailto:', '')}
-        </MagneticLink>
+        </a>
       </div>
     )}
-    <div class="mt-20 sm:mt-28 border-t hairline pt-8 flex flex-wrap gap-x-10 gap-y-4">
+    <div
+      style="margin-top:72px;padding-top:30px;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;gap:36px;"
+    >
       {others.map((l, i) => (
-        <a href={l.url} target="_blank" rel="noopener noreferrer" class="label hover:[color:var(--accent)] transition-colors">
-          <span class="tnum mr-2">{String(i + 1).padStart(2, '0')}</span>{l.name} <span aria-hidden="true">↗</span>
+        <a
+          href={l.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="label"
+          style="color:var(--muted);text-decoration:none;transition:color .2s ease;"
+          onmouseover="this.style.color='var(--accent)'"
+          onmouseout="this.style.color='var(--muted)'"
+        >
+          <span class="tnum" style="margin-right:8px;">{String(i + 1).padStart(2, '0')}</span>{l.name} <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       ))}

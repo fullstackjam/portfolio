@@ -1,25 +1,53 @@
 ---
 import type { Project } from '../../lib/types';
-import RevealText from '../RevealText.tsx';
 import CaseCard from '../CaseCard.astro';
 interface Props { projects: Project[]; }
 const { projects } = Astro.props;
+
+// Two featured rows at full theatricality; the rest collapse to a single
+// condensed line so the page doesn't repeat the same pattern four times.
+const FEATURED = 2;
+const featured = projects.slice(0, FEATURED);
+const condensed = projects.slice(FEATURED);
 const count = String(projects.length).padStart(2, '0');
 ---
-<section id="work" class="py-28 sm:py-40">
-  <div class="container-x">
-    <div class="flex items-baseline justify-between border-b-[1.5px] hairline pb-4">
-      <p class="label">Selected work</p>
-      <p class="label tnum hidden sm:block">[ {count} ]</p>
-    </div>
-    <h2 class="serif text-[clamp(2.4rem,6vw,5.5rem)] mt-8 mb-14 sm:mb-20">
-      <RevealText text="Things I have built." accent="built." client:visible />
-    </h2>
+<section id="work" class="container-x" style="padding:60px 1.25rem 80px;border-top:1px solid var(--rule);">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;">
+    <span class="label">Selected work</span>
+    <span class="label" style="letter-spacing:.06em;color:var(--muted);text-transform:none;">{count} — curated</span>
   </div>
 
-  {projects.length > 0 ? (
-    projects.map((project, i) => <CaseCard project={project} index={i} />)
-  ) : (
-    <p class="container-x muted">Projects are loading — check back in a moment.</p>
+  {featured.length > 0
+    ? featured.map((project, i) => <CaseCard project={project} index={i} />)
+    : <p class="muted">Projects are loading — check back in a moment.</p>
+  }
+
+  {condensed.length > 0 && (
+    <div
+      style="padding:34px 0 0;border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:baseline;gap:34px;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;color:var(--muted);"
+    >
+      {condensed.map((p, i) => {
+        const n = String(FEATURED + i + 1).padStart(2, '0');
+        const meta = [p.language, ...p.topics.slice(0, 2)].filter(Boolean).join(' · ');
+        return (
+          <a
+            href={p.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color:inherit;text-decoration:none;display:inline-flex;align-items:baseline;gap:8px;"
+          >
+            <span style="color:var(--accent);">{n}</span>
+            <span style="color:var(--fg);">{p.name}</span>
+            <span style="color:color-mix(in srgb, var(--muted) 70%, var(--bg));">— {meta}</span>
+          </a>
+        );
+      })}
+      <a
+        href="https://github.com/fullstackjam?tab=repositories"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="margin-left:auto;color:var(--fg);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;"
+      >see all <span aria-hidden="true">↗</span></a>
+    </div>
   )}
 </section>

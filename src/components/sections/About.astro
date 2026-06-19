@@ -1,30 +1,76 @@
 ---
 import type { ProfileData } from '../../lib/types';
 import { ABOUT } from '../../data/profile';
-import RevealText from '../RevealText.tsx';
 interface Props { profile: ProfileData; sinceYear: number; topLanguages: string[]; }
 const { profile, sinceYear, topLanguages } = Astro.props;
+
+// Three weighted bars echo the rough share of each language in the work.
+// Widths are decorative, not measured — they only need to read as "more / some
+// / a little" at a glance.
+const BAR_WIDTHS = [36, 24, 16];
+const BAR_COLORS = ['var(--accent)', 'var(--fg)', 'color-mix(in srgb, var(--fg) 30%, var(--bg))'];
+const langs = topLanguages.slice(0, 3);
+
+// Pull the rendered "good" into its own italic+accent span without coupling
+// the section to a generic word-highlight component. If the keyword is missing
+// the paragraph still renders unchanged.
+const KEYWORD = 'good';
+const idx = ABOUT.lastIndexOf(KEYWORD);
+const aboutBefore = idx >= 0 ? ABOUT.slice(0, idx) : ABOUT;
+const aboutAfter = idx >= 0 ? ABOUT.slice(idx + KEYWORD.length) : '';
 ---
-<section id="about" class="container-x py-28 sm:py-40 border-t hairline">
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-12">
-    <div class="lg:col-span-3">
-      <div class="lg:sticky lg:top-10 flex lg:flex-col items-center lg:items-start gap-6">
-        <p class="label">About</p>
-        <img
-          src={profile.avatarUrl}
-          alt={profile.name}
-          width="80" height="80" loading="lazy"
-          class="avatar rounded-full w-16 h-16 lg:w-20 lg:h-20 object-cover border hairline"
-        />
-      </div>
+<section id="about" class="container-x" style="padding:60px 1.25rem 90px;border-top:1px solid var(--rule);">
+  <div class="about-grid">
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <span class="label">About</span>
+      <img
+        src={profile.avatarUrl}
+        alt={profile.name}
+        width="84"
+        height="84"
+        loading="lazy"
+        class="avatar"
+        style="width:84px;height:84px;border-radius:50%;object-fit:cover;background:var(--surface);border:1px solid var(--rule);"
+      />
     </div>
-    <div class="lg:col-span-9 lg:col-start-4">
-      <h2 class="serif text-[clamp(1.7rem,3.2vw,3rem)] leading-[1.25] max-w-3xl">
-        <RevealText text={ABOUT} accent="good" client:visible />
+    <div>
+      <h2
+        class="serif"
+        style="font-size:clamp(26px,3.4vw,42px);line-height:1.28;letter-spacing:-.01em;margin:0;max-width:30ch;color:var(--fg);"
+      >
+        {aboutBefore}
+        {idx >= 0 && (
+          <span style="font-style:italic;color:var(--accent);">{KEYWORD}</span>
+        )}
+        {aboutAfter}
       </h2>
-      <p class="label mt-10">
-        Works mostly in — <span class="normal-case tracking-[0.14em]">{topLanguages.slice(0, 3).join(' / ') || '—'}</span> · since {sinceYear}
-      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:28px;margin-top:38px;align-items:center;">
+        <span class="label" style="letter-spacing:.16em;">works mostly in</span>
+        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+          {langs.map((name, i) => (
+            <span style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;color:var(--fg);">
+              <span
+                aria-hidden="true"
+                style={`width:${BAR_WIDTHS[i] ?? 12}px;height:5px;border-radius:3px;background:${BAR_COLORS[i] ?? 'var(--muted)'};display:inline-block;`}
+              ></span>
+              {name}
+            </span>
+          ))}
+        </div>
+        <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--muted);">· since {sinceYear}</span>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 0.28fr 0.72fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; gap: 28px; }
+  }
+</style>

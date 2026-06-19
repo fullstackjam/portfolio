@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-import ThemeToggle from '../components/ThemeToggle.tsx';
 import SmoothScroll from '../components/SmoothScroll.tsx';
+import TerminalBar from '../components/TerminalBar.tsx';
 import Console from '../components/Console';
 import { SOCIAL_LINKS } from '../data/profile';
 interface Props { title: string; description?: string; }
@@ -68,25 +68,11 @@ const personLd = {
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
     <SmoothScroll client:load />
-    <ThemeToggle client:load />
+    <TerminalBar client:load name="fullstackjam" />
     <slot />
     <script>
-      // Scroll-triggered growth for [data-grow] rules/bars. The .js class gates
-      // the hidden initial state, so no-JS and reduced-motion get static rules.
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         document.documentElement.classList.add('js');
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                e.target.classList.add('is-in');
-                io.unobserve(e.target);
-              }
-            }
-          },
-          { rootMargin: '-8% 0px -8% 0px' }
-        );
-        document.querySelectorAll('[data-grow]').forEach((el) => io.observe(el));
       }
     </script>
     <Console client:load />

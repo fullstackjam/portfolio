@@ -1,193 +1,153 @@
 ---
 import type { ProfileData } from '../../lib/types';
-import { POSITIONING } from '../../data/profile';
-import RevealText from '../RevealText.tsx';
-import MagneticLink from '../MagneticLink.tsx';
-import Parallax from '../Parallax.tsx';
+import { POSITIONING, OVERRIDES } from '../../data/profile';
 interface Props { profile: ProfileData; }
 const { profile } = Astro.props;
 
-// Split the headline at the first comma so the two halves can stagger and
-// indent independently; render the final word in sans as a deliberate
-// serif/sans collision. Falls back gracefully if the copy has no comma.
-const m = POSITIONING.headline.match(/^(.*?,)\s*(.*)$/);
-const line1 = m ? m[1] : POSITIONING.headline;
-const line2 = m ? m[2] : '';
-const l2words = line2.split(' ').filter(Boolean);
-const l2last = l2words.length > 1 ? l2words.pop()! : '';
-const l2rest = l2words.join(' ');
+// Split headline at the first comma so the two halves stagger independently.
+// The second half decomposes further into accent-block + sans-tail so the
+// typewriter can fade the highlight box in only once it has letters to wrap.
+const m = POSITIONING.headline.match(/^(.*?),\s*(.*?)\s+(\S+)\.?\s*$/);
+const line1 = m ? `${m[1]},` : POSITIONING.headline;
+const accentWord = m ? m[2] : POSITIONING.accent;
+const tailWord = m ? `${m[3]}.` : '';
 ---
-<header class="relative min-h-svh flex flex-col">
-  <script is:inline>
-    // Pre-paint gate for the boot sequence: first visit (or ?boot) with motion
-    // allowed. Runs before the hero parses, so non-boot visitors never see a
-    // hidden state. The guard timer restores the static page if the boot
-    // script somehow never runs.
-    (function () {
-      try {
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        var force = location.search.indexOf('boot') !== -1;
-        if (localStorage.getItem('boot:v1') && !force) return;
-        document.documentElement.classList.add('boot');
-        window.__bootGuard = setTimeout(function () {
-          document.documentElement.classList.remove('boot');
-        }, 3500);
-      } catch (e) {}
-    })();
-  </script>
+<section class="container-x" style="padding-top:84px;padding-bottom:90px;">
+  <p class="label" style="color:var(--accent);margin:0 0 30px;">Fullstack engineer</p>
+  <h1
+    id="hero-h1"
+    class="display"
+    style="font-size:clamp(52px,8.5vw,108px);line-height:.9;letter-spacing:-.03em;margin:0;color:var(--fg);"
+  >
+    <span style="display:block;"><span data-tw="0">{line1}</span></span>
+    <span style="display:block;margin-top:.04em;">
+      <span
+        data-tw="1"
+        class="hero-accent-block"
+        style="font-style:italic;background:var(--accent);color:var(--bg);padding:0 .12em .04em;border-radius:3px;"
+      >{accentWord}</span>
+      {tailWord && <>
+        {' '}
+        <span data-tw="2" style="font-family:var(--font-sans);font-weight:500;font-size:.78em;letter-spacing:-.045em;">{tailWord}</span>
+      </>}
+      <span class="hero-caret" data-caret aria-hidden="true"></span>
+    </span>
+  </h1>
 
-  <div class="container-x pt-6">
-    <div class="flex items-baseline justify-between gap-4 pb-4 pr-16 sm:pr-20">
-      <span class="label"><span class="[color:var(--accent)]" aria-hidden="true">✦</span>&nbsp;{profile.name} — selected work</span>
-      <span class="label tnum flex items-baseline gap-3">
-        <a href="/resume" class="hover:[color:var(--accent)] transition-colors">Résumé <span aria-hidden="true">↗</span></a>
-        <span class="hidden sm:inline muted">{profile.location} · Index 2026</span>
-      </span>
-    </div>
-    <div class="rule-x" data-boot-rule></div>
-  </div>
-
-  <div class="container-x flex-1 flex flex-col justify-center py-16">
-    <Parallax client:load amount={80}>
-      <div class="relative">
-        <div class="boot-seq" aria-hidden="true">
-          <div class="boot-line">$ <span class="boot-cmd"></span></div>
-          <div class="boot-line">layout/grid ········ <span class="boot-ok">ok</span></div>
-          <div class="boot-line">motion/lenis ······· <span class="boot-ok">ok</span></div>
-          <span class="caret boot-caret"></span>
-        </div>
-        <p class="label mb-8 [color:var(--accent)]" data-boot-eyebrow>Fullstack engineer</p>
-        <h1 class="hero-headline display text-[clamp(2.5rem,7vw,6.25rem)]">
-          <span class="block">
-            <RevealText text={line1} client:load />
-            {!line2 && <span class="caret caret-dock ml-[0.12ch]" aria-hidden="true"></span>}
-          </span>
-          {line2 && (
-            <span class="block">
-              {l2rest && <RevealText text={l2rest} accent={POSITIONING.accent} delay={0.15} client:load />}
-              {l2rest && ' '}
-              {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
-              {!l2rest && !l2last && <RevealText text={line2} accent={POSITIONING.accent} delay={0.15} client:load />}
-              <span class="caret caret-dock ml-[0.12ch]" aria-hidden="true"></span>
-            </span>
-          )}
-        </h1>
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px;margin-top:48px;">
+    <p style="margin:0;max-width:46ch;font-size:19px;line-height:1.6;color:var(--muted);">{POSITIONING.subline}</p>
+    {OVERRIDES.availableForWork && (
+      <div
+        class="label"
+        style="display:flex;align-items:center;gap:10px;color:var(--accent);letter-spacing:.2em;"
+      >
+        <span class="hero-pulse" aria-hidden="true"></span>
+        available for work
       </div>
-    </Parallax>
+    )}
   </div>
+</section>
 
-  <div class="container-x pb-10">
-    <div class="rule-x" data-boot-rule></div>
-    <div class="grid grid-cols-1 sm:grid-cols-12 gap-x-6 gap-y-8 items-end pt-8" data-boot-meta>
-      <p class="sm:col-span-6 max-w-md text-base sm:text-lg leading-relaxed muted">{POSITIONING.subline}</p>
-      <div class="sm:col-span-4 sm:col-start-9 sm:justify-self-end">
-        <MagneticLink href="#work" client:visible className="serif italic text-2xl accent ul">
-          selected work <span aria-hidden="true">↓</span>
-        </MagneticLink>
-      </div>
-    </div>
-  </div>
-</header>
+<style is:global>
+  @keyframes hero-caret-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+  @keyframes hero-pulse-anim { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.82)} }
+
+  .hero-caret {
+    display: inline-block;
+    width: .5ch;
+    height: .74em;
+    background: var(--fg);
+    vertical-align: -2px;
+    margin-left: .05ch;
+    animation: hero-caret-blink 1.1s steps(1) infinite;
+  }
+  .hero-pulse {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+    animation: hero-pulse-anim 2s ease-in-out infinite;
+  }
+
+  /* Suppressed initial state for the typewriter — set on <html> before paint
+     so first-frame visitors don't flash the full headline before JS retypes.
+     Static fallback (no-JS / reduced-motion) leaves it fully visible. */
+  html.hero-typing #hero-h1 [data-tw] { color: transparent; }
+  html.hero-typing #hero-h1 [data-tw="1"] {
+    background: transparent !important; padding: 0 !important; border-radius: 0 !important;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-caret { animation: none; opacity: 0; }
+    .hero-pulse { animation: none; }
+  }
+</style>
+
+<script is:inline>
+  // Pre-paint gate: hide the headline letters via CSS so the typewriter has
+  // something to fill. Reduced-motion or no-JS visitors keep the static page.
+  (function () {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      document.documentElement.classList.add('hero-typing');
+    } catch (e) {}
+  })();
+</script>
 
 <script>
-  import { animate } from 'motion';
-
+  // Character-by-character typewriter. The headline markup carries the full
+  // text as a no-JS fallback; we blank it, then refill segment by segment.
+  // The accent block's box is hidden until its segment starts, so the
+  // highlight doesn't sit there empty during the first beat.
   const root = document.documentElement;
-  if (root.classList.contains('boot')) {
-    clearTimeout((window as { __bootGuard?: number }).__bootGuard);
-    try {
-      localStorage.setItem('boot:v1', '1');
-    } catch {}
-    boot().catch(() => root.classList.remove('boot'));
-  }
+  if (root.classList.contains('hero-typing')) {
+    const h1 = document.getElementById('hero-h1');
+    const segs = h1 ? Array.from(h1.querySelectorAll<HTMLElement>('[data-tw]')) : [];
+    const caret = h1?.querySelector<HTMLElement>('[data-caret]') ?? null;
 
-  function wait(ms: number) {
-    return new Promise((r) => setTimeout(r, ms));
-  }
+    if (h1 && segs.length && caret) {
+      const data = segs.map((el) => ({ el, full: el.textContent ?? '', line: el.parentElement! }));
+      const block = segs[1];
+      const blockBg = block.style.background;
+      const blockPad = block.style.padding;
+      const blockRad = block.style.borderRadius;
+      // Clear visible text; CSS keeps the slots transparent until we write.
+      segs.forEach((s) => { s.textContent = ''; });
+      block.style.background = 'transparent';
+      block.style.padding = '0';
+      block.style.borderRadius = '0';
 
-  // The "reconcile" boot: mono spec lines print in the hero's whitespace and
-  // each `ok` settles one piece of the layout; the print block then collapses
-  // and the surviving caret docks after the headline's last word, for good.
-  // The headline itself is visible from the first frame throughout.
-  async function boot() {
-    const seq = document.querySelector<HTMLElement>('.boot-seq');
-    const caret = document.querySelector<HTMLElement>('.boot-caret');
-    const dock = document.querySelector<HTMLElement>('.caret-dock');
-    const lines = Array.from(document.querySelectorAll<HTMLElement>('.boot-line'));
-    if (!seq || !caret || !dock || lines.length === 0) {
-      root.classList.remove('boot');
-      return;
+      // Now drop the typing class so each filled span paints in its real color.
+      root.classList.remove('hero-typing');
+
+      let si = 0, ci = 0;
+      const timers: number[] = [];
+      const step = () => {
+        if (si >= data.length) {
+          data[data.length - 1].line.appendChild(caret);
+          return;
+        }
+        const seg = data[si];
+        if (ci === 0 && si === 1) {
+          block.style.background = blockBg;
+          block.style.padding = blockPad;
+          block.style.borderRadius = blockRad;
+        }
+        if (caret.parentElement !== seg.line) seg.line.appendChild(caret);
+        if (ci < seg.full.length) {
+          seg.el.textContent = seg.full.slice(0, ci + 1);
+          ci++;
+          timers.push(window.setTimeout(step, 48 + Math.random() * 46));
+        } else {
+          si++;
+          ci = 0;
+          timers.push(window.setTimeout(step, si === 1 ? 240 : 130));
+        }
+      };
+      timers.push(window.setTimeout(step, 320));
+
+      // Clean up if the page is reloaded via bfcache.
+      window.addEventListener('pagehide', () => timers.forEach((t) => clearTimeout(t)));
+    } else {
+      root.classList.remove('hero-typing');
     }
-
-    const ease: [number, number, number, number] = [0.2, 0.8, 0.2, 1];
-    // Output-line confirmations: rules + eyebrow, then the meta row.
-    const confirm: Array<() => void> = [
-      () => {
-        document.querySelectorAll<HTMLElement>('[data-boot-rule]').forEach((el) => {
-          animate(el, { scaleX: [0, 1] }, { duration: 0.8, ease });
-        });
-        const el = document.querySelector<HTMLElement>('[data-boot-eyebrow]');
-        if (el) el.style.color = 'var(--accent)';
-      },
-      () => {
-        const el = document.querySelector<HTMLElement>('[data-boot-meta]');
-        if (el) animate(el, { opacity: [0, 1], y: [8, 0] }, { duration: 0.45, ease });
-      },
-    ];
-
-    const moveCaret = (line: HTMLElement, gap: number) => {
-      caret.style.left = `${Math.ceil(line.getBoundingClientRect().width) + gap}px`;
-      caret.style.top = `${line.offsetTop}px`;
-    };
-
-    // Opening beat: the caret sits at the prompt, then gives one deliberate
-    // wink. (A CSS blink can't be trusted here — its phase depends on load.)
-    await wait(250);
-    caret.style.opacity = '0';
-    await wait(130);
-    caret.style.opacity = '1';
-    await wait(150);
-
-    // A human types the command; the output is the machine's and bursts.
-    const cmd = lines[0].querySelector<HTMLElement>('.boot-cmd');
-    const text = 'reconcile hero.yaml';
-    for (let i = 1; i <= text.length; i++) {
-      if (cmd) cmd.textContent = text.slice(0, i);
-      moveCaret(lines[0], 2);
-      await wait(28 + Math.random() * 34);
-    }
-    await wait(180); // Enter
-
-    const gaps = [0, 300]; // output bursts, one deliberate stutter
-    for (let i = 1; i < lines.length; i++) {
-      await wait(gaps[i - 1] ?? 70);
-      lines[i].style.visibility = 'visible';
-      moveCaret(lines[i], 7);
-      confirm[i - 1]?.();
-    }
-
-    await wait(600); // let the oks land
-    // Collapse: hard cuts, bottom-up — no fades.
-    for (let i = lines.length - 1; i >= 0; i--) {
-      lines[i].style.visibility = 'hidden';
-      await wait(45);
-    }
-
-    // Flight: spring the caret into its permanent dock in the headline.
-    const from = caret.getBoundingClientRect();
-    const to = dock.getBoundingClientRect();
-    caret.style.transformOrigin = 'top left';
-    await animate(
-      caret,
-      {
-        x: to.left - from.left,
-        y: to.top - from.top,
-        scaleX: to.width / from.width,
-        scaleY: to.height / from.height,
-      },
-      { duration: 0.26, ease: [0.3, 0.9, 0.2, 1] }
-    ).finished;
-    root.classList.remove('boot');
-    seq.style.display = 'none';
   }
 </script>
