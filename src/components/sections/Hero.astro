@@ -60,7 +60,7 @@ const l2rest = l2words.join(' ');
         <h1 class="hero-headline display text-[clamp(2.5rem,7vw,6.25rem)]">
           <span class="block">
             <RevealText text={line1} client:load />
-            {!line2 && <span class="caret caret-dock caret-blink ml-[0.12ch]" aria-hidden="true"></span>}
+            {!line2 && <span class="caret caret-dock ml-[0.12ch]" aria-hidden="true"></span>}
           </span>
           {line2 && (
             <span class="block">
@@ -68,7 +68,7 @@ const l2rest = l2words.join(' ');
               {l2rest && ' '}
               {l2last && <RevealText text={l2last} delay={0.3} className="font-sans font-medium tracking-[-0.045em]" client:load />}
               {!l2rest && !l2last && <RevealText text={line2} accent={POSITIONING.accent} delay={0.15} client:load />}
-              <span class="caret caret-dock caret-blink ml-[0.12ch]" aria-hidden="true"></span>
+              <span class="caret caret-dock ml-[0.12ch]" aria-hidden="true"></span>
             </span>
           )}
         </h1>
