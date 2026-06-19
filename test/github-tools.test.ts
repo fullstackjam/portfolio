@@ -148,3 +148,53 @@ describe('executeTool: unknown tool', () => {
     expect(out).toBe('unknown tool');
   });
 });
+
+describe('executeTool: search_repos', () => {
+  beforeEach(() => { vi.restoreAllMocks(); });
+
+  it('filters by language case-insensitively', async () => {
+    const repos = [
+      { name: 'a', language: 'Go', stargazers_count: 1, updated_at: '2026-01-01T00:00:00Z', description: null, topics: [] },
+      { name: 'b', language: 'TypeScript', stargazers_count: 2, updated_at: '2026-01-01T00:00:00Z', description: null, topics: [] },
+    ];
+    global.fetch = mockFetch(repos);
+    const out = await executeTool('search_repos', { query: 'go' }, mockKv());
+    expect(out).toContain('a · Go');
+    expect(out).not.toContain('b · TypeScript');
+  });
+
+  it('filters by topic', async () => {
+    const repos = [
+      { name: 'r1', language: 'Py', stargazers_count: 0, updated_at: '2026-01-01T00:00:00Z', description: '', topics: ['kubernetes', 'gitops'] },
+      { name: 'r2', language: 'Py', stargazers_count: 0, updated_at: '2026-01-01T00:00:00Z', description: '', topics: ['cli'] },
+    ];
+    global.fetch = mockFetch(repos);
+    const out = await executeTool('search_repos', { query: 'kubernetes' }, mockKv());
+    expect(out).toContain('r1');
+    expect(out).not.toContain('r2');
+  });
+
+  it('filters by description', async () => {
+    const repos = [
+      { name: 'r1', language: 'Py', stargazers_count: 0, updated_at: '2026-01-01T00:00:00Z', description: 'a homelab cluster', topics: [] },
+      { name: 'r2', language: 'Py', stargazers_count: 0, updated_at: '2026-01-01T00:00:00Z', description: 'a chatbot', topics: [] },
+    ];
+    global.fetch = mockFetch(repos);
+    const out = await executeTool('search_repos', { query: 'homelab' }, mockKv());
+    expect(out).toContain('r1');
+    expect(out).not.toContain('r2');
+  });
+
+  it('returns no matching repos when nothing matches', async () => {
+    global.fetch = mockFetch([
+      { name: 'x', language: 'Go', stargazers_count: 0, updated_at: '2026-01-01T00:00:00Z', description: '', topics: [] },
+    ]);
+    const out = await executeTool('search_repos', { query: 'rust' }, mockKv());
+    expect(out).toBe('no matching repos');
+  });
+
+  it('returns missing query when query is empty', async () => {
+    const out = await executeTool('search_repos', { query: '' }, mockKv());
+    expect(out).toBe('missing query');
+  });
+});

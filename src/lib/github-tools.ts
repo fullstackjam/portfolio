@@ -156,6 +156,29 @@ async function getCommitsTool(
   }
 }
 
+async function searchReposTool(
+  query: string,
+  kv: KVNamespace,
+  token?: string,
+): Promise<string> {
+  if (!query.trim()) return 'missing query';
+  let repos: RepoLine[];
+  try {
+    repos = await fetchRepos(kv, token);
+  } catch {
+    return 'error fetching repos';
+  }
+  const q = query.toLowerCase();
+  const matches = repos.filter(r =>
+    r.name.toLowerCase().includes(q) ||
+    (r.language?.toLowerCase().includes(q) ?? false) ||
+    r.description.toLowerCase().includes(q) ||
+    r.topics.some(t => t.toLowerCase().includes(q))
+  );
+  if (matches.length === 0) return 'no matching repos';
+  return formatRepos(matches);
+}
+
 export async function executeTool(
   name: string,
   args: Record<string, unknown>,
@@ -168,6 +191,10 @@ export async function executeTool(
     const limit = typeof args.limit === 'number' ? args.limit : 5;
     if (!repo) return 'missing repo';
     return getCommitsTool(repo, limit, kv, token);
+  }
+  if (name === 'search_repos') {
+    const query = String(args.query ?? '');
+    return searchReposTool(query, kv, token);
   }
   return 'unknown tool';
 }
