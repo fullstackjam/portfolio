@@ -10,13 +10,28 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  const env = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
-  const apiKey = env?.DEEPSEEK_API_KEY;
+  const env = (locals as { runtime?: { env?: Record<string, unknown> } }).runtime?.env;
+  const apiKey = env?.DEEPSEEK_API_KEY as string | undefined;
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'API key not configured' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
+  }
+
+  // Rate limit: 20 requests per IP per day
+  const kv = env?.GITHUB_CACHE as KVNamespace | undefined;
+  if (kv) {
+    const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
+    const key = `rl:${ip}`;
+    const count = parseInt((await kv.get(key)) ?? '0', 10);
+    if (count >= 20) {
+      return new Response(JSON.stringify({ error: 'Rate limit exceeded' }), {
+        status: 429,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    await kv.put(key, String(count + 1), { expirationTtl: 86400 });
   }
 
   const upstream = await fetch('https://api.deepseek.com/chat/completions', {
