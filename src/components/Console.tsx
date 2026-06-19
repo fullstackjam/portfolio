@@ -117,7 +117,7 @@ export default function Console() {
       setMessages(m => {
         const copy = [...m];
         const last = copy[copy.length - 1];
-        if (last?.streaming) copy[copy.length - 1] = { ...last, streaming: false };
+        if (last?.streaming) copy[copy.length - 1] = { ...last, streaming: false, content: last.content || '(no response)' };
         return copy;
       });
       setStreaming(false);
