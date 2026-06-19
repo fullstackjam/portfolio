@@ -87,9 +87,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const phase1Json = await phase1.json() as {
-    choices: Array<{ message: ChatMessage; finish_reason: string }>;
+    choices?: Array<{ message: ChatMessage; finish_reason: string }>;
   };
-  const choice = phase1Json.choices[0];
+  const choice = phase1Json.choices?.[0];
+  if (!choice) {
+    return sseFromText('');
+  }
   const toolCalls = choice.message.tool_calls ?? [];
 
   if (toolCalls.length === 0) {
