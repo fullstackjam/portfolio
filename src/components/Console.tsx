@@ -131,7 +131,6 @@ export default function Console() {
   if (!open) {
     return (
       <>
-        <style>{BLINK_CSS}</style>
         <button
           onClick={handleOpen}
           aria-label="Open console"
@@ -146,7 +145,6 @@ export default function Console() {
         >
           <span style={{ color: C.prompt }}>❯</span>
           ask me anything
-          <span className="console-cursor" style={{ width: '0.55em', height: '1.05em', background: C.text }} />
         </button>
       </>
     );
