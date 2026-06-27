@@ -4,7 +4,7 @@ import { buildSystemPrompt } from '../../lib/chat-prompt';
 import { TOOLS, executeTool } from '../../lib/github-tools';
 
 const DEEPSEEK = 'https://api.deepseek.com/chat/completions';
-const MODEL = 'deepseek-v4-pro';
+const MODEL = 'deepseek-v4-flash';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -34,9 +34,36 @@ async function callDeepSeek(apiKey: string, messages: ChatMessage[], opts: { too
       messages,
       max_tokens: 500,
       stream: opts.stream,
+      ...(opts.stream ? { stream_options: { include_usage: true } } : {}),
       ...(opts.tools ? { tools: opts.tools, tool_choice: 'auto' } : {}),
     }),
   });
+}
+
+async function logStreamUsage(stream: ReadableStream<Uint8Array>): Promise<void> {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+    }
+  } catch { /* ignore */ }
+  buf += decoder.decode();
+  for (const line of buf.split('\n')) {
+    const data = line.trim();
+    if (!data.startsWith('data:')) continue;
+    const payload = data.slice(5).trim();
+    if (payload === '[DONE]') continue;
+    try {
+      const json = JSON.parse(payload) as { usage?: Record<string, number> | null };
+      if (json.usage) {
+        console.log(JSON.stringify({ msg: 'deepseek_usage', phase: 'phase2', model: MODEL, ...json.usage }));
+      }
+    } catch { /* ignore */ }
+  }
 }
 
 export const POST: APIRoute = async ({ request, locals }) => {
@@ -88,7 +115,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   const phase1Json = await phase1.json() as {
     choices?: Array<{ message: ChatMessage; finish_reason: string }>;
+    usage?: Record<string, number>;
   };
+  if (phase1Json.usage) {
+    console.log(JSON.stringify({ msg: 'deepseek_usage', phase: 'phase1', model: MODEL, ...phase1Json.usage }));
+  }
   const choice = phase1Json.choices?.[0];
   if (!choice) {
     return sseFromText('');
@@ -125,7 +156,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 
-  return new Response(phase2.body, {
+  const ctx = (locals as { runtime?: { ctx?: { waitUntil?: (p: Promise<unknown>) => void } } }).runtime?.ctx;
+  let stream = phase2.body;
+  if (stream) {
+    const [toClient, toLog] = stream.tee();
+    stream = toClient;
+    const logTask = logStreamUsage(toLog);
+    if (ctx?.waitUntil) ctx.waitUntil(logTask); else void logTask;
+  }
+
+  return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
