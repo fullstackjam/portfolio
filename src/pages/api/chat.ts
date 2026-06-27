@@ -51,6 +51,7 @@ async function logStreamUsage(stream: ReadableStream<Uint8Array>): Promise<void>
       buf += decoder.decode(value, { stream: true });
     }
   } catch { /* ignore */ }
+  buf += decoder.decode();
   for (const line of buf.split('\n')) {
     const data = line.trim();
     if (!data.startsWith('data:')) continue;
@@ -156,11 +157,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   const ctx = (locals as { runtime?: { ctx?: { waitUntil?: (p: Promise<unknown>) => void } } }).runtime?.ctx;
-  const [toClient, toLog] = phase2.body!.tee();
-  const logTask = logStreamUsage(toLog);
-  if (ctx?.waitUntil) ctx.waitUntil(logTask); else void logTask;
+  let stream = phase2.body;
+  if (stream) {
+    const [toClient, toLog] = stream.tee();
+    stream = toClient;
+    const logTask = logStreamUsage(toLog);
+    if (ctx?.waitUntil) ctx.waitUntil(logTask); else void logTask;
+  }
 
-  return new Response(toClient, {
+  return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
