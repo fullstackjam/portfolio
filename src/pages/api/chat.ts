@@ -4,7 +4,7 @@ import { buildSystemPrompt } from '../../lib/chat-prompt';
 import { TOOLS, executeTool } from '../../lib/github-tools';
 
 const DEEPSEEK = 'https://api.deepseek.com/chat/completions';
-const MODEL = 'deepseek-v4-flash';
+const MODEL = 'deepseek-flash';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -34,6 +34,7 @@ async function callDeepSeek(apiKey: string, messages: ChatMessage[], opts: { too
       messages,
       max_tokens: 500,
       stream: opts.stream,
+      thinking: { type: 'disabled' },
       ...(opts.stream ? { stream_options: { include_usage: true } } : {}),
       ...(opts.tools ? { tools: opts.tools, tool_choice: 'auto' } : {}),
     }),
