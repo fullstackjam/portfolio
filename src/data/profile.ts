@@ -15,9 +15,9 @@ export const POSITIONING = {
     'Fullstack engineer working across the web, Kubernetes, and the cloud — from GitOps pipelines to the pixels people actually touch.',
 };
 
-/** About narrative — specific, drawn from real repos (k8s-gitops, openboot, Go). */
+/** About narrative — specific, drawn from real repos (cloudlab, openboot, Go). */
 export const ABOUT =
-  "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a fully GitOps-managed cluster, progressive delivery, and a development environment I can reproduce from a single clone. I care about systems that stay up, and interfaces that feel good to use.";
+  "I'm a fullstack engineer who enjoys the whole stack — shipping the product people see, and running the infrastructure that keeps it alive. Lately that has meant a lot of Kubernetes and Go: a Flux-managed k3s lab, and a development environment I can reproduce from a single command. I care about systems that stay up, and interfaces that feel good to use.";
 
 /** Projects shown in Selected Work — fully curated narrative cards.
  *  Copy is drawn from each repo; keep it understated and first-person. */
@@ -38,34 +38,34 @@ export const PROJECTS: Project[] = [
     hasDashboard: true,
   },
   {
-    name: 'k8s-gitops',
-    url: 'https://github.com/fullstackjam/k8s-gitops',
-    year: '2022 → now',
+    name: 'cloudlab',
+    url: 'https://github.com/fullstackjam/cloudlab',
+    year: '2026 → now',
     language: 'Python',
-    topics: ['Kubernetes', 'GitOps', 'ArgoCD'],
+    topics: ['Kubernetes', 'GitOps', 'Flux'],
     story:
-      'I wanted a cluster I could rebuild from zero, so all the infrastructure is code, reconciled by GitOps: git is the source of truth and nobody runs kubectl apply by hand.',
+      'I wanted a cluster I could rebuild from zero, so this one is a single-node k3s lab: Flux reconciles everything from git, SOPS encrypts the secrets, and a tunnel is the only way in. Nobody runs kubectl apply by hand.',
     reflection: {
       label: 'what it taught me',
       text: 'When "rebuild" becomes a non-event, you dare to change boldly.',
     },
-    footnote: { prompt: '→', cmd: 'k8s-gitops.fullstackjam.com', note: 'architecture & docs', action: { kind: 'link', href: 'https://k8s-gitops.fullstackjam.com/' } },
+    footnote: { prompt: 'commit', cmd: 'latest on GitHub', action: { kind: 'link', href: 'https://github.com/fullstackjam/cloudlab/commits' } },
+    latestCommit: { owner: 'fullstackjam', repo: 'cloudlab' },
   },
   {
-    name: 'lark-coding-agent-bridge',
-    url: 'https://github.com/fullstackjam/lark-coding-agent-bridge',
-    year: '2026',
-    language: 'TypeScript',
-    topics: ['AI', 'Lark', 'agent'],
+    name: 'phrasefolio',
+    url: 'https://github.com/fullstackjam/phrasefolio',
+    year: '2026 → now',
+    language: 'JavaScript',
+    topics: ['Cloudflare', 'Workers', 'D1'],
     story:
-      'Driving an AI coding agent from inside Lark/Feishu. The hard part was context and streaming — turning a chat thread into state an agent can use, then streaming the results back.',
+      'I kept collecting English phrases in spreadsheets and losing the thread. So I built a small notebook — a reading page, a Worker API, and a D1 database — that unlocks in the browser and follows me across devices. The hard part was keeping the notes private without making them annoying to use.',
     reflection: {
       label: 'what it taught me',
-      text: 'An elegant interface is usually just catching someone else\'s mess.',
+      text: 'A notebook only counts if you open it the next day.',
     },
-    // Footnote is replaced at render time with the live latest commit; this is the fallback.
-    footnote: { prompt: 'commit', cmd: 'latest on GitHub', action: { kind: 'link', href: 'https://github.com/fullstackjam/lark-coding-agent-bridge/commits' } },
-    latestCommit: { owner: 'fullstackjam', repo: 'lark-coding-agent-bridge' },
+    footnote: { prompt: 'commit', cmd: 'latest on GitHub', action: { kind: 'link', href: 'https://github.com/fullstackjam/phrasefolio/commits' } },
+    latestCommit: { owner: 'fullstackjam', repo: 'phrasefolio' },
   },
   {
     name: 'blog',
