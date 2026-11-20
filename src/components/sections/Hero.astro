@@ -5,41 +5,39 @@ interface Props { profile: ProfileData; }
 const { profile } = Astro.props;
 
 // Split headline at the first comma so the two halves stagger independently.
-// The second half decomposes further into accent-block + sans-tail so the
-// typewriter can fade the highlight box in only once it has letters to wrap.
+// Keep separate segments for the italic accent and the serif ending.
 const m = POSITIONING.headline.match(/^(.*?),\s*(.*?)\s+(\S+)\.?\s*$/);
 const line1 = m ? `${m[1]},` : POSITIONING.headline;
 const accentWord = m ? m[2] : POSITIONING.accent;
-const tailWord = m ? `${m[3]}.` : '';
+const tailWord = m ? `${m[3].replace(/\.$/, '')}.` : '';
 ---
-<section class="container-x" style="padding-top:84px;padding-bottom:90px;">
-  <p class="label" style="color:var(--accent);margin:0 0 30px;">Fullstack engineer</p>
+<section class="container-x section-hero">
+  <p class="label" style="margin:0 0 36px;">Fullstack engineer</p>
   <h1
     id="hero-h1"
     class="display"
-    style="font-size:clamp(52px,8.5vw,108px);line-height:.9;letter-spacing:-.03em;margin:0;color:var(--fg);"
+    style="font-size:clamp(52px,9vw,124px);line-height:.92;letter-spacing:-.03em;margin:0;color:var(--fg);"
   >
     <span style="display:block;"><span data-tw="0">{line1}</span></span>
     <span style="display:block;margin-top:.04em;">
       <span
         data-tw="1"
-        class="hero-accent-block"
-        style="font-style:italic;background:var(--accent);color:var(--bg);padding:0 .12em .04em;border-radius:3px;"
+        style="font-style:italic;color:var(--accent);"
       >{accentWord}</span>
       {tailWord && <>
         {' '}
-        <span data-tw="2" style="font-family:var(--font-sans);font-weight:500;font-size:.78em;letter-spacing:-.045em;">{tailWord}</span>
+        <span data-tw="2">{tailWord}</span>
       </>}
       <span class="hero-caret" data-caret aria-hidden="true"></span>
     </span>
   </h1>
 
-  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px;margin-top:48px;">
-    <p style="margin:0;max-width:46ch;font-size:19px;line-height:1.6;color:var(--muted);">{POSITIONING.subline}</p>
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px;margin-top:56px;">
+    <p style="margin:0;max-width:44ch;font-size:clamp(17px,1.5vw,19px);line-height:1.6;color:var(--muted);">{POSITIONING.subline}</p>
     {OVERRIDES.availableForWork && (
       <div
         class="label"
-        style="display:flex;align-items:center;gap:10px;color:var(--accent);letter-spacing:.2em;"
+        style="display:flex;align-items:center;gap:10px;color:var(--fg);"
       >
         <span class="hero-pulse" aria-hidden="true"></span>
         available for work
@@ -54,27 +52,24 @@ const tailWord = m ? `${m[3]}.` : '';
 
   .hero-caret {
     display: inline-block;
-    width: .5ch;
-    height: .74em;
-    background: var(--fg);
-    vertical-align: -2px;
-    margin-left: .05ch;
+    width: 2px;
+    height: .78em;
+    background: var(--accent);
+    vertical-align: -.04em;
+    margin-left: .08em;
     animation: hero-caret-blink 1.1s steps(1) infinite;
   }
   .hero-pulse {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--accent);
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
     display: inline-block;
-    animation: hero-pulse-anim 2s ease-in-out infinite;
+    animation: hero-pulse-anim 2.4s ease-in-out infinite;
   }
 
   /* Suppressed initial state for the typewriter — set on <html> before paint
      so first-frame visitors don't flash the full headline before JS retypes.
      Static fallback (no-JS / reduced-motion) leaves it fully visible. */
   html.hero-typing #hero-h1 [data-tw] { color: transparent; }
-  html.hero-typing #hero-h1 [data-tw="1"] {
-    background: transparent !important; padding: 0 !important; border-radius: 0 !important;
-  }
   @media (prefers-reduced-motion: reduce) {
     .hero-caret { animation: none; opacity: 0; }
     .hero-pulse { animation: none; }
@@ -95,8 +90,6 @@ const tailWord = m ? `${m[3]}.` : '';
 <script>
   // Character-by-character typewriter. The headline markup carries the full
   // text as a no-JS fallback; we blank it, then refill segment by segment.
-  // The accent block's box is hidden until its segment starts, so the
-  // highlight doesn't sit there empty during the first beat.
   const root = document.documentElement;
   if (root.classList.contains('hero-typing')) {
     const h1 = document.getElementById('hero-h1');
@@ -105,15 +98,8 @@ const tailWord = m ? `${m[3]}.` : '';
 
     if (h1 && segs.length && caret) {
       const data = segs.map((el) => ({ el, full: el.textContent ?? '', line: el.parentElement! }));
-      const block = segs[1];
-      const blockBg = block.style.background;
-      const blockPad = block.style.padding;
-      const blockRad = block.style.borderRadius;
-      // Clear visible text; CSS keeps the slots transparent until we write.
+      // Clear visible text before filling each segment.
       segs.forEach((s) => { s.textContent = ''; });
-      block.style.background = 'transparent';
-      block.style.padding = '0';
-      block.style.borderRadius = '0';
 
       // Now drop the typing class so each filled span paints in its real color.
       root.classList.remove('hero-typing');
@@ -126,11 +112,6 @@ const tailWord = m ? `${m[3]}.` : '';
           return;
         }
         const seg = data[si];
-        if (ci === 0 && si === 1) {
-          block.style.background = blockBg;
-          block.style.padding = blockPad;
-          block.style.borderRadius = blockRad;
-        }
         if (caret.parentElement !== seg.line) seg.line.appendChild(caret);
         if (ci < seg.full.length) {
           seg.el.textContent = seg.full.slice(0, ci + 1);

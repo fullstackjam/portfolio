@@ -7,10 +7,10 @@ const { projects } = Astro.props;
 // Every curated project gets a full case row.
 const count = String(projects.length).padStart(2, '0');
 ---
-<section id="work" class="container-x" style="padding:60px 1.25rem 80px;border-top:1px solid var(--rule);">
-  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;">
+<section id="work" class="container-x section-pad">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px;">
     <span class="label">Selected work</span>
-    <span class="label" style="letter-spacing:.06em;color:var(--muted);text-transform:none;">{count} — curated</span>
+    <span class="label tnum">{count} — curated</span>
   </div>
 
   {projects.length > 0
@@ -19,13 +19,14 @@ const count = String(projects.length).padStart(2, '0');
   }
 
   <div
-    style="padding:34px 0 0;border-top:1px solid var(--rule);display:flex;justify-content:flex-end;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;"
+    style="padding:36px 0 0;border-top:1px solid var(--rule);display:flex;justify-content:flex-end;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;"
   >
     <a
       href="https://github.com/fullstackjam?tab=repositories"
       target="_blank"
       rel="noopener noreferrer"
-      style="color:var(--fg);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;"
-    >see all <span aria-hidden="true">↗</span></a>
+      class="ul"
+      style="color:var(--fg);text-decoration:none;padding-bottom:3px;"
+    >see all repositories <span aria-hidden="true" class="accent">↗</span></a>
   </div>
 </section>
